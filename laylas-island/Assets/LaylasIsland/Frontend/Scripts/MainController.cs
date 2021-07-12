@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using Boscohyun;
 using LaylasIsland.Frontend.BlockChain;
+using LaylasIsland.Frontend.Game;
 using LaylasIsland.Frontend.State;
 using UnityEngine;
 
@@ -20,6 +21,9 @@ namespace LaylasIsland.Frontend
         public LocalLayer LocalLayer { get; private set; }
 
         public ActionManager ActionManager { get; private set; }
+        
+        public GameController GameController { get; private set; }
+        
         public bool IsInitialized { get; private set; }
 
         private CommandLineOptions _options;
@@ -52,6 +56,7 @@ namespace LaylasIsland.Frontend
 
             States = new States();
             LocalLayer = new LocalLayer();
+            GameController = new GameController();
         }
 
         private IEnumerator Start()

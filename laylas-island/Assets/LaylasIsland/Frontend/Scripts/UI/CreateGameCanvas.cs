@@ -8,7 +8,7 @@ using UnityEngine.UI;
 namespace LaylasIsland.Frontend.UI
 {
     using UniRx;
-    
+
     public class CreateGameCanvas : MonoBehaviour
     {
         private enum Visible
@@ -16,9 +16,9 @@ namespace LaylasIsland.Frontend.UI
             Public,
             Private,
         }
-        
+
         #region View
-        
+
         [Serializable]
         public struct SelectPeople
         {
@@ -39,7 +39,7 @@ namespace LaylasIsland.Frontend.UI
         [SerializeField] private SelectVisible _selectVisible;
         [SerializeField] private TMP_InputField _passwordInputField;
         [SerializeField] private Button _createButton;
-        
+
         #endregion
 
         #region Model
@@ -67,7 +67,7 @@ namespace LaylasIsland.Frontend.UI
                     _peopleCountsIndex.Value++;
                 }).AddTo(gameObject);
             }
-            
+
             for (var i = _selectPeople.arrowDownButtons.Count; i > 0; i--)
             {
                 _selectPeople.arrowDownButtons[i - 1].OnClickAsObservable().Subscribe(_ =>
@@ -84,7 +84,7 @@ namespace LaylasIsland.Frontend.UI
             _selectVisible.publicButton.OnClickAsObservable()
                 .Subscribe(_ => _visible.Value = Visible.Public)
                 .AddTo(gameObject);
-            
+
             _selectVisible.privateButton.OnClickAsObservable()
                 .Subscribe(_ => _visible.Value = Visible.Private)
                 .AddTo(gameObject);
@@ -93,7 +93,25 @@ namespace LaylasIsland.Frontend.UI
             {
                 // Play Click SFX
                 gameObject.SetActive(false);
-                UIHolder.PrepareGameCanvas.gameObject.SetActive(true);
+                UIHolder.LoadingCanvas.gameObject.SetActive(true);
+                MainController.Instance.GameController.InitializeAsObservable("Game Room Name", string.Empty)
+                    .First()
+                    .Subscribe(e =>
+                    {
+                        if (e is null)
+                        {
+                            UIHolder.LoadingCanvas.gameObject.SetActive(false);
+                            UIHolder.PrepareGameCanvas.gameObject.SetActive(true);
+                        }
+                        else
+                        {
+                            UIHolder.MessagePopupCanvas.ShowWithASingleButton(e.Message, "OK", () =>
+                            {
+                                UIHolder.LoadingCanvas.gameObject.SetActive(false);
+                                gameObject.SetActive(true);
+                            });
+                        }
+                    });
             }).AddTo(gameObject);
             // ~View
 
@@ -104,7 +122,7 @@ namespace LaylasIsland.Frontend.UI
                 {
                     return;
                 }
-                
+
                 for (var i = _selectPeople.countTexts.Count; i > 0; i--)
                 {
                     _selectPeople.countTexts[i - 1].text = _peopleCounts[value].ToString();
@@ -127,7 +145,7 @@ namespace LaylasIsland.Frontend.UI
                     default:
                         throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
-                
+
                 _selectVisible.selection.transform.localPosition = localPosition;
             }).AddTo(gameObject);
             // ~Model

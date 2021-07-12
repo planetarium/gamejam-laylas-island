@@ -8,7 +8,7 @@ namespace LaylasIsland.Frontend.UI
     public class JoinGameCanvas : MonoBehaviour
     {
         #region View
-        
+
         [SerializeField] private CreateGameCanvas.SelectPeople _selectPeople;
         [SerializeField] private TMP_InputField _nameInputField;
         [SerializeField] private TMP_InputField _passwordInputField;
@@ -23,7 +23,7 @@ namespace LaylasIsland.Frontend.UI
         private readonly ReactiveProperty<int> _peopleCountsIndex = new ReactiveProperty<int>(_peopleCounts.Length - 1);
 
         #endregion
-        
+
         private void Awake()
         {
             // View
@@ -39,7 +39,7 @@ namespace LaylasIsland.Frontend.UI
                     _peopleCountsIndex.Value++;
                 }).AddTo(gameObject);
             }
-            
+
             for (var i = _selectPeople.arrowDownButtons.Count; i > 0; i--)
             {
                 _selectPeople.arrowDownButtons[i - 1].OnClickAsObservable().Subscribe(_ =>
@@ -57,10 +57,28 @@ namespace LaylasIsland.Frontend.UI
             {
                 // Play Click SFX
                 gameObject.SetActive(false);
-                UIHolder.PrepareGameCanvas.gameObject.SetActive(true);
+                UIHolder.LoadingCanvas.gameObject.SetActive(true);
+                MainController.Instance.GameController.InitializeAsObservable("Game Room Name", string.Empty)
+                    .First()
+                    .Subscribe(e =>
+                    {
+                        if (e is null)
+                        {
+                            UIHolder.LoadingCanvas.gameObject.SetActive(false);
+                            UIHolder.PrepareGameCanvas.gameObject.SetActive(true);
+                        }
+                        else
+                        {
+                            UIHolder.MessagePopupCanvas.ShowWithASingleButton(e.Message, "OK", () =>
+                            {
+                                UIHolder.LoadingCanvas.gameObject.SetActive(false);
+                                gameObject.SetActive(true);
+                            });
+                        }
+                    });
             }).AddTo(gameObject);
             // ~View
-            
+
             // Model
             _peopleCountsIndex.Subscribe(value =>
             {
