@@ -2,9 +2,9 @@ using System.Security.Cryptography;
 using System.Text;
 using Libplanet;
 
-namespace LaylasIsland.Backend.Action
+namespace LaylasIsland.Backend.Extensions
 {
-    public static class AddressExtension
+    public static class AddressExtensions
     {
         public static Address Derive(this Address address, byte[] key)
         {
