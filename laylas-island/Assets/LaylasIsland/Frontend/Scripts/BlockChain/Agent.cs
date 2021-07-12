@@ -616,15 +616,7 @@ namespace LaylasIsland.Frontend.BlockChain
 #if !UNITY_EDITOR
                 if (!Application.isBatchMode && (bootstrapTask.IsFaulted || bootstrapTask.IsCanceled))
                 {
-                    var errorMsg = string.Format(L10nManager.Localize("UI_ERROR_FORMAT"),
-                        L10nManager.Localize("BOOTSTRAP_FAIL"));
-
-                    Widget.Find<SystemPopup>().Show(
-                        L10nManager.Localize("UI_ERROR"),
-                        errorMsg,
-                        L10nManager.Localize("UI_QUIT"),
-                        false
-                    );
+                    Debug.LogError("Bootstrap failed");
                     yield break;
                 }
 #endif
