@@ -11,7 +11,7 @@ namespace LaylasIsland.Frontend
     using UniRx;
 
     [RequireComponent(typeof(Agent), typeof(RPCAgent))]
-    public class Game : MonoSingleton<Game>
+    public class MainController : MonoSingleton<MainController>
     {
         public IAgent Agent { get; private set; }
         

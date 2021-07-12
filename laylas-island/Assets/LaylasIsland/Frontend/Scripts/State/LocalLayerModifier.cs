@@ -29,7 +29,7 @@ namespace LaylasIsland.Frontend.State
             LocalLayer.Instance.Add(agentAddress, modifier);
 
             //FIXME Avoid LocalLayer duplicate modify gold.
-            var state = new GoldBalanceState(agentAddress, Game.Instance.Agent.GetBalance(agentAddress, gold.Currency));
+            var state = new GoldBalanceState(agentAddress, MainController.Instance.Agent.GetBalance(agentAddress, gold.Currency));
             if (!state.Address.Equals(agentAddress))
             {
                 return;
