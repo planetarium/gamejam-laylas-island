@@ -1,9 +1,9 @@
-using Libplanet;
-using Libplanet.Blocks;
 using System;
 using System.Runtime.Serialization;
+using Libplanet;
+using Libplanet.Blocks;
 
-namespace Lib9c
+namespace LaylasIsland.Backend
 {
     [Serializable]
     public class InvalidMinerException : InvalidBlockException
