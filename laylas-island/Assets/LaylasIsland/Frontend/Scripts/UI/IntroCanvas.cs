@@ -6,21 +6,28 @@ namespace LaylasIsland.Frontend.UI
 {
     public class IntroCanvas : MonoBehaviour
     {
+        #region View
+        
         [SerializeField] private Slider _progress;
         [SerializeField] private Button _signInButton;
 
+        #endregion
+        
         private void Awake()
         {
+            // View
             _signInButton.OnClickAsObservable().Subscribe(_ =>
             {
                 // Play Click SFX
                 gameObject.SetActive(false);
                 UIHolder.MainCanvas.gameObject.SetActive(true);
             }).AddTo(gameObject);
+            // ~View
         }
 
         private void OnEnable()
         {
+            UIHolder.HeaderCanvas.gameObject.SetActive(false);
             _progress.value = 0f;
         }
 
