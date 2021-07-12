@@ -8,6 +8,9 @@ using Libplanet.Blockchain.Renderers;
 using Serilog;
 using Serilog.Events;
 using NCAction = Libplanet.Action.PolymorphicAction<LaylasIsland.Backend.Action.BaseAction>;
+#if !UNITY_EDITOR
+using LaylasIsland.Backend.Action;
+#endif
 
 namespace LaylasIsland.Backend
 {

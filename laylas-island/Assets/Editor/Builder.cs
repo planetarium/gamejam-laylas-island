@@ -124,7 +124,7 @@ namespace Editor
             string scriptName = null,
             string snapshotName = null)
         {
-            string[] scenes = { "Assets/_Scenes/Game.unity" };
+            string[] scenes = { "Assets/LaylasIsland/Frontend/MainScene.unity" };
 
             targetDirName = targetDirName ?? buildTarget.ToString();
             string locationPathName = Path.Combine(
