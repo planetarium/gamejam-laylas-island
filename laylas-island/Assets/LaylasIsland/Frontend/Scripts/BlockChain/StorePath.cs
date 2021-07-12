@@ -17,8 +17,8 @@ namespace LaylasIsland.Frontend.BlockChain
 
         private static readonly IImmutableDictionary<Env, string> DirNames = new Dictionary<Env, string>
         {
-            [Env.Production] = "9c",
-            [Env.Development] = "9c_dev",
+            [Env.Production] = "LI",
+            [Env.Development] = "LI_dev",
         }.ToImmutableDictionary();
 
         public static string GetDefaultStoragePath(Env? env = null)
@@ -45,7 +45,7 @@ namespace LaylasIsland.Frontend.BlockChain
         {
             var prefix = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             // Linux/macOS: $HOME/.local/share/planetarium/
-            // Windows: %LOCALAPPDATA%\planetarium\ (i.e., %HOME%\AppData\Local\planetarium\9c)
+            // Windows: %LOCALAPPDATA%\planetarium\ (i.e., %HOME%\AppData\Local\planetarium\LI)
             return Path.Combine(prefix, "planetarium");
         }
     }

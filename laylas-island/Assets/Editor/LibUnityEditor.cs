@@ -5,23 +5,23 @@ using UnityEngine;
 
 namespace LaylasIsland.Editor
 {
-    public static class LibUnityEditor
+    public static class LaylasIslandEditor
     {
-        [MenuItem("Tools/LibUnity/Delete All(Editor) - Make Genesis Block For Dev To StreamingAssets Folder")]
+        [MenuItem("Tools/LaylasIsland/Delete All(Editor) - Make Genesis Block For Dev To StreamingAssets Folder")]
         public static void DeleteAllEditorAndMakeGenesisBlock()
         {
             DeleteAll(StorePath.GetDefaultStoragePath(StorePath.Env.Development));
             MakeGenesisBlock(BlockManager.GenesisBlockPath);
         }
 
-        [MenuItem("Tools/LibUnity/Delete All(Player) - Make Genesis Block For Prod To StreamingAssets Folder")]
+        [MenuItem("Tools/LaylasIsland/Delete All(Player) - Make Genesis Block For Prod To StreamingAssets Folder")]
         public static void DeleteAllPlayerAndMakeGenesisBlock()
         {
             DeleteAll(StorePath.GetDefaultStoragePath(StorePath.Env.Production));
             MakeGenesisBlock(BlockManager.GenesisBlockPath);
         }
 
-        [MenuItem("Tools/LibUnity/Make Genesis Block")]
+        [MenuItem("Tools/LaylasIsland/Make Genesis Block")]
         public static void MakeGenesisBlock()
         {
             var path = EditorUtility.SaveFilePanel(
@@ -39,7 +39,7 @@ namespace LaylasIsland.Editor
             MakeGenesisBlock(path);
         }
         
-        [MenuItem("Tools/Delete All Of PlayerPrefs")]
+        [MenuItem("Tools/LaylasIsland/Delete All Of PlayerPrefs")]
         public static void DeleteAllOfPlayerPrefs()
         {
             PlayerPrefs.DeleteAll();
