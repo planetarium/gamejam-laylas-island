@@ -26,14 +26,14 @@ namespace Editor
         public static void BuildMacOS()
         {
             Debug.Log("Build macOS");
-            Build(BuildTarget.StandaloneOSX, targetDirName: "macOS", scriptName: "run", snapshotName: "LibUnitySnapshot");
+            Build(BuildTarget.StandaloneOSX, targetDirName: "macOS", scriptName: "run", snapshotName: "LaylasIslandSnapshot");
         }
 
         [MenuItem("Build/Standalone/Windows")]
         public static void BuildWindows()
         {
             Debug.Log("Build Windows");
-            Build(BuildTarget.StandaloneWindows64, targetDirName: "Windows", scriptName: "run.bat", snapshotName: "LibUnitySnapshot.exe");
+            Build(BuildTarget.StandaloneWindows64, targetDirName: "Windows", scriptName: "run.bat", snapshotName: "LaylasIslandSnapshot.exe");
         }
 
         [MenuItem("Build/Standalone/Linux")]
@@ -76,14 +76,14 @@ namespace Editor
         public static void BuildMacOSDevelopment()
         {
             Debug.Log("Build MacOS Development");
-            Build(BuildTarget.StandaloneOSX, BuildOptions.Development, targetDirName: "macOS", scriptName: "run", snapshotName: "LibUnitySnapshot");
+            Build(BuildTarget.StandaloneOSX, BuildOptions.Development, targetDirName: "macOS", scriptName: "run", snapshotName: "LaylasIslandSnapshot");
         }
 
         [MenuItem("Build/Development/Windows")]
         public static void BuildWindowsDevelopment()
         {
             Debug.Log("Build Windows Development");
-            Build(BuildTarget.StandaloneWindows64, BuildOptions.Development, targetDirName: "Windows", scriptName: "run.bat", snapshotName: "LibUnitySnapshot.exe");
+            Build(BuildTarget.StandaloneWindows64, BuildOptions.Development, targetDirName: "Windows", scriptName: "run.bat", snapshotName: "LaylasIslandSnapshot.exe");
         }
 
         [MenuItem("Build/Development/Linux")]
