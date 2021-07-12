@@ -10,5 +10,23 @@ namespace LaylasIsland.Frontend.UI
 
         [SerializeField] private MainCanvas _mainCanvas;
         public static MainCanvas MainCanvas => Instance._mainCanvas;
+
+        [SerializeField] private HeaderCanvas _headerCanvas;
+        public static HeaderCanvas HeaderCanvas => Instance._headerCanvas;
+
+        [SerializeField] private CreateGameCanvas _createGameCanvas;
+        public static CreateGameCanvas CreateGameCanvas => Instance._createGameCanvas;
+
+        [SerializeField] private JoinGameCanvas _joinGameCanvas;
+        public static JoinGameCanvas JoinGameCanvas => Instance._joinGameCanvas;
+
+        [SerializeField] private PrepareGameCanvas _prepareGameCanvas;
+        public static PrepareGameCanvas PrepareGameCanvas => Instance._prepareGameCanvas;
+
+        [SerializeField] private PlayGameCanvas _playGameCanvas;
+        public static PlayGameCanvas PlayGameCanvas => Instance._playGameCanvas;
+
+        [SerializeField] private EndGameCanvas _endGameCanvas;
+        public static EndGameCanvas EndGameCanvas => Instance._endGameCanvas;
     }
 }
