@@ -53,6 +53,7 @@
       "name": "package.openupm.com",
       "url": "https://package.openupm.com",
       "scopes": [
+        "com.cysharp.unitask",
         "com.neuecc.unirx",
         "com.openupm"
       ]
