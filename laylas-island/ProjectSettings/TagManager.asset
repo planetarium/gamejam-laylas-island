@@ -3,10 +3,7 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags:
-  - Canvas
-  - Enemy
-  - Effects
+  tags: []
   layers:
   - Default
   - TransparentFX
@@ -16,15 +13,15 @@ TagManager:
   - UI
   - 
   - 
-  - Character
-  - VFX
-  - InGameBackground
-  - InGameForeground
-  - InGameForegroundVFX
-  - InGameBackgroundVFX
-  - CharacterVFX
-  - UISystemInfoLayer
-  - PostProcess
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 
@@ -44,30 +41,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: InGameBackground
-    uniqueID: 573067601
-    locked: 0
-  - name: InGameBackgroundVFX
-    uniqueID: 2704171349
-    locked: 0
-  - name: Character
-    uniqueID: 3909689525
-    locked: 0
-  - name: CharacterVFX
-    uniqueID: 3029468793
-    locked: 0
-  - name: InGameForeground
-    uniqueID: 2862456707
-    locked: 0
-  - name: InGameForegroundVFX
-    uniqueID: 3977676121
-    locked: 0
   - name: UI
-    uniqueID: 555532309
-    locked: 0
-  - name: VFX
-    uniqueID: 764030297
-    locked: 0
-  - name: UISystemInfoLayer
-    uniqueID: 1092445747
+    uniqueID: 1943776221
     locked: 0
