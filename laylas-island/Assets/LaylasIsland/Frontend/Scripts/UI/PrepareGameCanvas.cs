@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using LaylasIsland.Frontend.Game;
+using UniRx;
+using UnityEngine;
 
 namespace LaylasIsland.Frontend.UI
 {
@@ -9,8 +11,11 @@ namespace LaylasIsland.Frontend.UI
             UIHolder.HeaderCanvas.Show(
                 () =>
                 {
-                    gameObject.SetActive(false);
-                    UIHolder.MainCanvas.gameObject.SetActive(true);
+                    GameController.Instance.TerminateAsObservable().First().Subscribe(_ =>
+                    {
+                        gameObject.SetActive(false);
+                        UIHolder.MainCanvas.gameObject.SetActive(true);
+                    });
                 },
                 HeaderCanvas.Element.Back,
                 HeaderCanvas.Element.Player,

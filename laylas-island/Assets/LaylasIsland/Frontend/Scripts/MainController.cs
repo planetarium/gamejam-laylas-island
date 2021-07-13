@@ -32,9 +32,7 @@ namespace LaylasIsland.Frontend
         public LocalLayer LocalLayer { get; private set; }
 
         public ActionManager ActionManager { get; private set; }
-
-        public GameController GameController { get; private set; }
-
+        
         public bool HasSignedIn { get; private set; }
 
         #region Mono & Initialization
@@ -56,7 +54,6 @@ namespace LaylasIsland.Frontend
 
             States = new States();
             LocalLayer = new LocalLayer();
-            GameController = new GameController();
         }
 
         private IEnumerator Start()
