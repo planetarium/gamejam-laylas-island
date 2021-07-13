@@ -86,7 +86,7 @@ namespace LaylasIsland.Frontend
                 IsInitialized = true;
             }
 
-            ActionManager.SignUp();
+            // ActionManager.SignUp();
         }
 
         private void SubscribeRPCAgent()

@@ -55,7 +55,7 @@ namespace LaylasIsland.Frontend.BlockChain
                 return;
             }
 
-            var agent = eval.OutputStates.GetState(Game.Instance.Agent.Address);
+            var agent = eval.OutputStates.GetState(MainController.Instance.Agent.Address);
             Debug.Log(agent);
         }
     }
