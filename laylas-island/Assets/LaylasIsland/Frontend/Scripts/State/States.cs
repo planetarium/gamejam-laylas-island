@@ -10,7 +10,7 @@ namespace LaylasIsland.Frontend.State
     /// </summary>
     public class States
     {
-        public static States Instance => Game.Instance.States;
+        public static States Instance => MainController.Instance.States;
 
         public AgentState AgentState { get; private set; }
 

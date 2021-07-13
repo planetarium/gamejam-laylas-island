@@ -31,7 +31,7 @@ namespace LaylasIsland.Frontend.State
             }
         }
 
-        public static LocalLayer Instance => Game.Instance.LocalLayer;
+        public static LocalLayer Instance => MainController.Instance.LocalLayer;
 
         private ModifierInfo<AgentStateModifier> _agentModifierInfo;
 

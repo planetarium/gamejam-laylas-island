@@ -5,7 +5,6 @@ using Libplanet.Blocks;
 using Libplanet.Tx;
 using System;
 using System.Linq;
-using Lib9c;
 using Libplanet;
 using NCAction = Libplanet.Action.PolymorphicAction<LaylasIsland.Backend.Action.BaseAction>;
 

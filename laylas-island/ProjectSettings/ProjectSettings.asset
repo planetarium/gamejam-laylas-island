@@ -668,11 +668,16 @@ PlayerSettings:
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
   cloudServicesEnabled:
+    Analytics: 1
     Build: 0
     Collab: 0
     ErrorHub: 0
+    Game Performance: 0
     Hub: 0
+    Purchasing: 0
+    UDP: 0
     UNet: 0
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -686,7 +691,7 @@ PlayerSettings:
     m_VersionName: 
   apiCompatibilityLevel: 3
   activeInputHandler: 0
-  cloudProjectId: 8a57bbeb-d031-4558-8c13-4d87cce90bed
+  cloudProjectId: 0b03268a-4b67-48d4-833a-93a05718209e
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: Layla's Island

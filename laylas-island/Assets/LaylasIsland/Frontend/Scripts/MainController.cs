@@ -4,6 +4,7 @@ using System.IO;
 using Boscohyun;
 using Libplanet;
 using LaylasIsland.Frontend.BlockChain;
+using LaylasIsland.Frontend.Game;
 using LaylasIsland.Frontend.State;
 using Libplanet.Crypto;
 using UnityEngine;
@@ -13,7 +14,7 @@ namespace LaylasIsland.Frontend
     using UniRx;
 
     [RequireComponent(typeof(Agent), typeof(RPCAgent))]
-    public class Game : MonoSingleton<Game>
+    public class MainController : MonoSingleton<MainController>
     {
         public IAgent Agent { get; private set; }
         
@@ -22,6 +23,9 @@ namespace LaylasIsland.Frontend
         public LocalLayer LocalLayer { get; private set; }
 
         public ActionManager ActionManager { get; private set; }
+        
+        public GameController GameController { get; private set; }
+        
         public bool IsInitialized { get; private set; }
 
         private CommandLineOptions _options;
@@ -54,6 +58,7 @@ namespace LaylasIsland.Frontend
 
             States = new States();
             LocalLayer = new LocalLayer();
+            GameController = new GameController();
         }
 
         private IEnumerator Start()
@@ -81,7 +86,7 @@ namespace LaylasIsland.Frontend
                 IsInitialized = true;
             }
 
-            ActionManager.SignUp();
+            // ActionManager.SignUp();
         }
 
         private void SubscribeRPCAgent()

@@ -78,7 +78,7 @@ namespace Editor
 
         private bool CheckPlaying()
         {
-            if (!Application.isPlaying || !Game.Instance.IsInitialized)
+            if (!Application.isPlaying || !MainController.Instance.IsInitialized)
             {
                 Debug.Log("You can use this feature in only play mode.");
                 return false;
@@ -106,13 +106,13 @@ namespace Editor
 
             if (stateProxy is null && CheckPlaying())
             {
-                stateProxy = new StateProxy(Game.Instance.Agent);
+                stateProxy = new StateProxy(MainController.Instance.Agent);
             }
         }
 
         private void RegisterAliases()
         {
-            var states = Game.Instance.States;
+            var states = MainController.Instance.States;
             stateProxy.RegisterAlias("agent", states.AgentState.Address);
         }
     }
