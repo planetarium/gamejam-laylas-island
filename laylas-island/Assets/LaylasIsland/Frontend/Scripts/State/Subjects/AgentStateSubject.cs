@@ -1,5 +1,4 @@
-using Libplanet.Assets;
-using UniRx;
+using LaylasIsland.Backend.State;
 
 namespace LaylasIsland.Frontend.State.Subjects
 {
@@ -8,7 +7,8 @@ namespace LaylasIsland.Frontend.State.Subjects
     /// </summary>
     public static class AgentStateSubject
     {
-        public static readonly Subject<FungibleAssetValue> Gold
-            = new Subject<FungibleAssetValue>();
+        public static void Set(AgentState agentState)
+        {
+        }
     }
 }

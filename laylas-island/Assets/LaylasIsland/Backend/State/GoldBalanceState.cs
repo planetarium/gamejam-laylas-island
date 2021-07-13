@@ -12,7 +12,7 @@ namespace LaylasIsland.Backend.State
             Gold = gold;
 
         public GoldBalanceState(Dictionary serialized) : base(serialized) =>
-            Gold = serialized[nameof(Gold)].ToFungibleAssetValue();
+            Gold = serialized["gold"].ToFungibleAssetValue();
 
         public GoldBalanceState Add(FungibleAssetValue adder) =>
             new GoldBalanceState(Address, Gold + adder);
@@ -20,9 +20,7 @@ namespace LaylasIsland.Backend.State
         public object Clone() =>
             MemberwiseClone();
 
-        public Address Address { get; }
-
         public override IValue Serialize() => ((Dictionary) base.Serialize())
-            .SetItem(nameof(Gold), Gold.Serialize());
+            .SetItem("gold", Gold.Serialize());
     }
 }

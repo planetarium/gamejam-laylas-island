@@ -26,6 +26,7 @@ namespace LaylasIsland.Frontend.State
             
             LocalLayer.Instance.InitializeAgent(state);
             AgentState = LocalLayer.Instance.Modify(state);
+            AgentStateSubject.Set(AgentState);
         }
 
         public void SetGoldBalanceState(GoldBalanceState goldBalanceState)
@@ -37,7 +38,7 @@ namespace LaylasIsland.Frontend.State
             }
 
             GoldBalanceState = LocalLayer.Instance.Modify(goldBalanceState);
-            AgentStateSubject.Gold.OnNext(GoldBalanceState.Gold);
+            GoldBalanceStateSubject.Set(GoldBalanceState);
         }
     }
 }

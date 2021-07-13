@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
 using System.IO;
+using Bencodex.Types;
 using Boscohyun;
+using LaylasIsland.Backend.State;
 using Libplanet;
 using LaylasIsland.Frontend.BlockChain;
 using LaylasIsland.Frontend.Game;
 using LaylasIsland.Frontend.State;
+using LaylasIsland.Frontend.UI;
 using Libplanet.Crypto;
 using UnityEngine;
 
@@ -13,25 +16,26 @@ namespace LaylasIsland.Frontend
 {
     using UniRx;
 
-    [RequireComponent(typeof(Agent), typeof(RPCAgent))]
     public class MainController : MonoSingleton<MainController>
     {
-        public IAgent Agent { get; private set; }
-        
+        [SerializeField] private Agent _agent;
+
+        private static readonly string CommandLineOptionsJsonPath =
+            Path.Combine(Application.streamingAssetsPath, "clo.json");
+
+        private CommandLineOptions _options;
+
+        public IAgent Agent => _agent;
+
         public States States { get; private set; }
 
         public LocalLayer LocalLayer { get; private set; }
 
         public ActionManager ActionManager { get; private set; }
-        
+
         public GameController GameController { get; private set; }
-        
-        public bool IsInitialized { get; private set; }
 
-        private CommandLineOptions _options;
-
-        private static readonly string CommandLineOptionsJsonPath =
-            Path.Combine(Application.streamingAssetsPath, "clo.json");
+        public bool HasSignedIn { get; private set; }
 
         #region Mono & Initialization
 
@@ -41,198 +45,95 @@ namespace LaylasIsland.Frontend
             {
                 return;
             }
-            
-            _options = CommandLineOptions.Load(
-                CommandLineOptionsJsonPath
-            );
 
+            _options = CommandLineOptions.Load(CommandLineOptionsJsonPath);
             if (_options.RpcClient)
             {
-                Agent = GetComponent<RPCAgent>();
-                SubscribeRPCAgent();
-            }
-            else
-            {
-                Agent = GetComponent<Agent>();
+                // Agent = GetComponent<RPCAgent>();
+                // SubscribeRPCAgent();
+                throw new Exception("Does Not Support RPC Agent");
             }
 
             States = new States();
             LocalLayer = new LocalLayer();
             GameController = new GameController();
+
+            UIHolder.IntroCanvas.SetProgress(0f);
         }
 
         private IEnumerator Start()
         {
-            // Initialize Agent
-            var agentInitialized = false;
-            var agentInitializeSucceed = false;
-            yield return StartCoroutine(
-                CoLogin(
-                    succeed =>
-                    {
-                        Debug.Log($"Agent initialized. {succeed}");
-                        agentInitialized = true;
-                        agentInitializeSucceed = succeed;
-                    }
-                )
-            );
-
-            yield return new WaitUntil(() => agentInitialized);
-            
-            ActionManager = new ActionManager(Agent);
-            
-            if (agentInitializeSucceed)
             {
-                IsInitialized = true;
+                // Sign-in
+                const float targetProgress = .5f;
+                var progressDisposable = UIHolder.IntroCanvas
+                    .SetProgressAsObservable(targetProgress, 5f)
+                    .Subscribe();
+                yield return StartCoroutine(CoSignIn(succeed => HasSignedIn = succeed));
+
+                Debug.Log($"Agent has signed-in. {HasSignedIn}");
+                progressDisposable.Dispose();
+                UIHolder.IntroCanvas.SetProgress(targetProgress);
             }
-
-            // ActionManager.SignUp();
-        }
-
-        private void SubscribeRPCAgent()
-        {
-            if (!(Agent is RPCAgent rpcAgent))
-            {
-                return;
-            }
-
-            Debug.Log("[Game]Subscribe RPCAgent");
-
-            rpcAgent.OnRetryStarted
-                .ObserveOnMainThread()
-                .Subscribe(agent =>
-                {
-                    Debug.Log($"[Game]RPCAgent OnRetryStarted. {rpcAgent.Address.ToHex()}");
-                    OnRPCAgentRetryStarted(agent);
-                })
-                .AddTo(gameObject);
-
-            rpcAgent.OnRetryEnded
-                .ObserveOnMainThread()
-                .Subscribe(agent =>
-                {
-                    Debug.Log($"[Game]RPCAgent OnRetryEnded. {rpcAgent.Address.ToHex()}");
-                    OnRPCAgentRetryAndPreloadEnded(agent);
-                })
-                .AddTo(gameObject);
-
-            rpcAgent.OnPreloadStarted
-                .ObserveOnMainThread()
-                .Subscribe(agent =>
-                {
-                    Debug.Log($"[Game]RPCAgent OnPreloadStarted. {rpcAgent.Address.ToHex()}");
-                    OnRPCAgentRetryAndPreloadEnded(agent);
-                })
-                .AddTo(gameObject);
-
-            rpcAgent.OnPreloadEnded
-                .ObserveOnMainThread()
-                .Subscribe(agent =>
-                {
-                    Debug.Log($"[Game]RPCAgent OnPreloadEnded. {rpcAgent.Address.ToHex()}");
-                    OnRPCAgentRetryAndPreloadEnded(agent);
-                })
-                .AddTo(gameObject);
-
-            rpcAgent.OnDisconnected
-                .ObserveOnMainThread()
-                .Subscribe(agent =>
-                {
-                    Debug.Log($"[Game]RPCAgent OnDisconnected. {rpcAgent.Address.ToHex()}");
-                    QuitWithAgentConnectionError(agent);
-                })
-                .AddTo(gameObject);
-        }
-
-        private static void OnRPCAgentRetryStarted(RPCAgent rpcAgent)
-        {
-        }
-
-        private static void OnRPCAgentRetryAndPreloadEnded(RPCAgent rpcAgent)
-        {
-        }
-
-        private void QuitWithAgentConnectionError(RPCAgent rpcAgent)
-        {
         }
 
         #endregion
 
-        private IEnumerator CoLogin(Action<bool> callback)
+        private IEnumerator CoSignIn(Action<bool> callback)
         {
-            var privateKey = string.IsNullOrEmpty(_options.PrivateKey)
-                ? new PrivateKey()
-                : new PrivateKey(ByteUtil.ParseHex(_options.PrivateKey));
+            PrivateKey privateKey = null;
+            // if (string.IsNullOrEmpty(_options.PrivateKey))
+            // {
+                var onClickSigning = false;
+                UIHolder.IntroCanvas.OnClickSigning.First().Subscribe(_ => onClickSigning = true);
+                UIHolder.IntroCanvas.ShowSigning();
+                yield return new WaitUntil(() => onClickSigning);
 
-            Agent.Initialize(
-                _options,
-                privateKey,
-                callback
-            );
-            yield break;
-//             if (_options.Maintenance)
-//             {
-//                 var w = Widget.Create<SystemPopup>();
-//                 w.CloseCallback = () =>
-//                 {
-//                     Application.OpenURL(GameConfig.DiscordLink);
-// #if UNITY_EDITOR
-//                     UnityEditor.EditorApplication.ExitPlaymode();
-// #else
-//                     Application.Quit();
-// #endif
-//                 };
-//                 w.Show(
-//                     "UI_MAINTENANCE",
-//                     "UI_MAINTENANCE_CONTENT",
-//                     "UI_OK"
-//                 );
-//                 yield break;
-//             }
-//
-//             if (_options.TestEnd)
-//             {
-//                 var w = Widget.Find<Confirm>();
-//                 w.CloseCallback = result =>
-//                 {
-//                     if (result == ConfirmResult.Yes)
-//                     {
-//                         Application.OpenURL(GameConfig.DiscordLink);
-//                     }
-//
-// #if UNITY_EDITOR
-//                     UnityEditor.EditorApplication.ExitPlaymode();
-// #else
-//                     Application.Quit();
-// #endif
-//                 };
-//                 w.Show("UI_TEST_END", "UI_TEST_END_CONTENT", "UI_GO_DISCORD", "UI_QUIT");
-//
-//                 yield break;
-//             }
-//
-//             var settings = Widget.Find<UI.Settings>();
-//             settings.UpdateSoundSettings();
-//             settings.UpdatePrivateKey(_options.PrivateKey);
-//
-//             var loginPopup = Widget.Find<LoginPopup>();
-//
-//             if (Application.isBatchMode)
-//             {
-//                 loginPopup.Show(_options.KeyStorePath, _options.PrivateKey);
-//             }
-//             else
-//             {
-//                 var intro = Widget.Find<Intro>();
-//                 intro.Show(_options.KeyStorePath, _options.PrivateKey);
-//                 yield return new WaitUntil(() => loginPopup.Login);
-//             }
-//
-//             Agent.Initialize(
-//                 _options,
-//                 loginPopup.GetPrivateKey(),
-//                 callback
-//             );
+                privateKey = UIHolder.IntroCanvas.SelectedPrivateKey;
+            // }
+            // else
+            // {
+            //     privateKey = new PrivateKey(ByteUtil.ParseHex(_options.PrivateKey));
+            // }
+
+            Agent.Initialize(_options, privateKey, success =>
+            {
+                if (!success)
+                {
+                    throw new Exception("Agent initialization failed");
+                }
+                
+                ActionManager = new ActionManager(Agent);
+                
+                var agentStateValue = Agent.GetState(privateKey.ToAddress());
+                if (agentStateValue is null)
+                {
+                    // Sign-up
+                    UIHolder.LoadingCanvas.gameObject.SetActive(true);
+                    ActionManager.SignUp().Subscribe(eval =>
+                    {
+                        if (!(eval.Exception is null))
+                        {
+                            Debug.LogError(eval.Exception.ToString());
+                            throw eval.Exception;
+                        }
+                        
+                        // Sign-in
+                        UIHolder.LoadingCanvas.gameObject.SetActive(false);
+                        UIHolder.IntroCanvas.gameObject.SetActive(false);
+                        UIHolder.MainCanvas.gameObject.SetActive(true);
+                        callback?.Invoke(success);
+                    });
+                }
+                else
+                {
+                    // Sign-in
+                    States.Instance.SetAgentState(new AgentState((Dictionary) agentStateValue));
+                    UIHolder.IntroCanvas.gameObject.SetActive(false);
+                    UIHolder.MainCanvas.gameObject.SetActive(true);
+                    callback?.Invoke(success);
+                }
+            });
         }
 
         public void ResetStore()

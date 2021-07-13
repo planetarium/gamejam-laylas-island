@@ -4,6 +4,8 @@ using LaylasIsland.Backend.Renderer;
 
 namespace LaylasIsland.Frontend.BlockChain
 {
+    using UniRx;
+    
     /// <summary>
     /// 게임의 Action을 생성하고 Agent에 넣어주는 역할을 한다.
     /// </summary>
@@ -14,6 +16,8 @@ namespace LaylasIsland.Frontend.BlockChain
         private readonly IAgent _agent;
 
         private readonly ActionRenderer _renderer;
+
+        private static ActionManager Instance => MainController.Instance.ActionManager;
 
         private void ProcessAction(GameAction gameAction)
         {
@@ -36,10 +40,15 @@ namespace LaylasIsland.Frontend.BlockChain
             _renderer = agent.ActionRenderer;
         }
 
-        public void SignUp()
+        public static IObservable<BaseAction.ActionEvaluation<SignUp>> SignUp()
         {
             var action = new SignUp();
-            ProcessAction(action);
+            Instance.ProcessAction(action);
+            return Instance._renderer.EveryRender<SignUp>()
+                .SkipWhile(eval => !eval.Action.Id.Equals(action.Id))
+                .First()
+                .ObserveOnMainThread()
+                .Timeout(ActionTimeout);
         }
     }
 }
