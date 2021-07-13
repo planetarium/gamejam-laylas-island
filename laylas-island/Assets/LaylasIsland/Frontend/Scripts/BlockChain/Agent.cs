@@ -269,7 +269,6 @@ namespace LaylasIsland.Frontend.BlockChain
                 })
                 .Wait(SwarmLinger + 1 * 1000);
 
-            SaveQueuedActions();
             disposed = true;
         }
 
@@ -399,7 +398,6 @@ namespace LaylasIsland.Frontend.BlockChain
 
                 StartNullableCoroutine(_autoPlayer);
                 callback(SyncSucceed);
-                LoadQueuedActions();
                 TipChanged += (___, index) => { BlockIndexSubject.OnNext(index); };
             };
             _miner = options.NoMiner ? null : CoMiner();
@@ -790,53 +788,6 @@ namespace LaylasIsland.Frontend.BlockChain
             }
 
             return tx;
-        }
-
-        private void LoadQueuedActions()
-        {
-            var path = Path.Combine(Application.persistentDataPath, QueuedActionsFileName);
-            if (File.Exists(path))
-            {
-                var actionsListBytes = File.ReadAllBytes(path);
-                if (actionsListBytes.Any())
-                {
-                    var actionsList = ByteSerializer.Deserialize<List<GameAction>>(actionsListBytes);
-                    foreach (var action in actionsList)
-                    {
-                        EnqueueAction(action);
-                    }
-
-                    Debug.Log($"Load queued actions: {_queuedActions.Count}");
-                    File.Delete(path);
-                }
-            }
-        }
-
-        private void SaveQueuedActions()
-        {
-            if (_queuedActions.Any())
-            {
-                List<GameAction> actionsList;
-
-                var path = Path.Combine(Application.persistentDataPath, QueuedActionsFileName);
-                if (!File.Exists(path))
-                {
-                    Debug.Log("Create new queuedActions list.");
-                    actionsList = new List<GameAction>();
-                }
-                else
-                {
-                    actionsList =
-                        ByteSerializer.Deserialize<List<GameAction>>(File.ReadAllBytes(path));
-                    Debug.Log($"Load queuedActions list. : {actionsList.Count}");
-                }
-
-                Debug.LogWarning($"Save QueuedActions : {_queuedActions.Count}");
-                while (_queuedActions.TryDequeue(out var action))
-                    actionsList.Add((GameAction) action.InnerAction);
-
-                File.WriteAllBytes(path, ByteSerializer.Serialize(actionsList));
-            }
         }
 
         private static void DeletePreviousStore()

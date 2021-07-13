@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using Boscohyun;
+using Libplanet;
 using LaylasIsland.Frontend.BlockChain;
 using LaylasIsland.Frontend.State;
 using UnityEngine;
@@ -78,10 +79,8 @@ namespace LaylasIsland.Frontend
             {
                 IsInitialized = true;
             }
-            else
-            {
-                QuitWithAgentConnectionError(null);
-            }
+
+            ActionManager.SignUp();
         }
 
         private void SubscribeRPCAgent()
@@ -155,6 +154,15 @@ namespace LaylasIsland.Frontend
 
         private IEnumerator CoLogin(Action<bool> callback)
         {
+            var privateKey = string.IsNullOrEmpty(_options.PrivateKey)
+                ? new PrivateKey()
+                : new PrivateKey(ByteUtil.ParseHex(_options.PrivateKey));
+
+            Agent.Initialize(
+                _options,
+                privateKey,
+                callback
+            );
             yield break;
 //             if (_options.Maintenance)
 //             {

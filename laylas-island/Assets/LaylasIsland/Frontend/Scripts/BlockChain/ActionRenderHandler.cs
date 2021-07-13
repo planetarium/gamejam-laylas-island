@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using LaylasIsland.Backend.Action;
 using LaylasIsland.Backend.Renderer;
+using LaylasIsland.Backend.State;
 using LaylasIsland.Frontend.Extensions;
+using UnityEngine;
 
 namespace LaylasIsland.Frontend.BlockChain
 {
@@ -31,11 +34,18 @@ namespace LaylasIsland.Frontend.BlockChain
         public void Start(ActionRenderer renderer)
         {
             _renderer = renderer;
+            _renderer.EveryRender<SignUp>().Subscribe(RenderSignUp);
         }
 
         public void Stop()
         {
             _disposables.DisposeAllAndClear();
+        }
+
+        private void RenderSignUp(BaseAction.ActionEvaluation<SignUp> eval)
+        {
+            var agent = eval.OutputStates.GetState(Game.Instance.Agent.Address);
+            Debug.Log(agent);
         }
     }
 }
