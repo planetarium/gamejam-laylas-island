@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace LaylasIsland.Frontend.BlockChain
 {
+    using UniRx;
     /// <summary>
     /// 현상태 : 각 액션의 랜더 단계에서 즉시 게임 정보에 반영시킴. 아바타를 선택하지 않은 상태에서 이전에 성공시키지 못한 액션을 재수행하고
     ///       이를 핸들링하면, 즉시 게임 정보에 반영시길 수 없기 때문에 에러가 발생함.
@@ -36,7 +37,9 @@ namespace LaylasIsland.Frontend.BlockChain
             _renderer = renderer;
             _renderer.EveryRender<SignUp>()
                 .Where(ValidateEvaluationForCurrentAgent)
-                .Subscribe(RenderSignUp);
+                .ObserveOnMainThread()
+                .Subscribe(RenderSignUp)
+                .AddTo(_disposables);
         }
 
         public void Stop()

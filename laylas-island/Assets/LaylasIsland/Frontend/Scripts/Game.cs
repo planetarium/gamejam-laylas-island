@@ -5,6 +5,7 @@ using Boscohyun;
 using Libplanet;
 using LaylasIsland.Frontend.BlockChain;
 using LaylasIsland.Frontend.State;
+using Libplanet.Crypto;
 using UnityEngine;
 
 namespace LaylasIsland.Frontend
