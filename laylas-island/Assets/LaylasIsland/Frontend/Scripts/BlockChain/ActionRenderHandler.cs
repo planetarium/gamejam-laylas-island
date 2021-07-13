@@ -49,6 +49,12 @@ namespace LaylasIsland.Frontend.BlockChain
 
         private void RenderSignUp(BaseAction.ActionEvaluation<SignUp> eval)
         {
+            if (!(eval.Exception is null))
+            {
+                Debug.LogError(eval.Exception.ToString());
+                return;
+            }
+
             var agent = eval.OutputStates.GetState(Game.Instance.Agent.Address);
             Debug.Log(agent);
         }
