@@ -34,7 +34,9 @@ namespace LaylasIsland.Frontend.BlockChain
         public void Start(ActionRenderer renderer)
         {
             _renderer = renderer;
-            _renderer.EveryRender<SignUp>().Subscribe(RenderSignUp);
+            _renderer.EveryRender<SignUp>()
+                .Where(ValidateEvaluationForCurrentAgent)
+                .Subscribe(RenderSignUp);
         }
 
         public void Stop()

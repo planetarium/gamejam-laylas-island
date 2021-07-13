@@ -20,12 +20,12 @@ namespace LaylasIsland.Backend.Action
                 return states.SetState(agentAddress, MarkChanged);
             }
 
-            if (states.GetState(agentAddress) is null)
+            if (!(states.GetState(agentAddress) is null))
             {
-                return states.SetState(agentAddress, new AgentState(agentAddress).Serialize());
+                throw new Exception($"{agentAddress.ToHex()} already exists");
             }
 
-            return states;
+            return states.SetState(agentAddress, new AgentState(agentAddress).Serialize());
         }
 
         protected override IImmutableDictionary<string, IValue> PlainValueInternal => new Dictionary<string, IValue>
