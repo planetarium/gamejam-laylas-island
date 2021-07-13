@@ -7,14 +7,14 @@ namespace LaylasIsland.Editor
 {
     public static class LaylasIslandEditor
     {
-        [MenuItem("Tools/LaylasIsland/Delete All(Editor) - Make Genesis Block For Dev To StreamingAssets Folder")]
+        [MenuItem("Tools/LaylasIsland/Delete Blockchain Store(dev) - Make Genesis Block For Dev To StreamingAssets Folder")]
         public static void DeleteAllEditorAndMakeGenesisBlock()
         {
             DeleteAll(StorePath.GetDefaultStoragePath(StorePath.Env.Development));
             MakeGenesisBlock(BlockManager.GenesisBlockPath);
         }
 
-        [MenuItem("Tools/LaylasIsland/Delete All(Player) - Make Genesis Block For Prod To StreamingAssets Folder")]
+        [MenuItem("Tools/LaylasIsland/Delete Blockchain Store(prod) - Make Genesis Block For Prod To StreamingAssets Folder")]
         public static void DeleteAllPlayerAndMakeGenesisBlock()
         {
             DeleteAll(StorePath.GetDefaultStoragePath(StorePath.Env.Production));
@@ -49,7 +49,8 @@ namespace LaylasIsland.Editor
         {
             if (Directory.Exists(path))
             {
-                Directory.Delete(path, recursive: true);
+                Directory.Delete(path, true);
+                Debug.Log($"Blockchain Store deleted at {path}");
             }
         }
 
@@ -57,6 +58,7 @@ namespace LaylasIsland.Editor
         {
             var block = BlockManager.MineGenesisBlock();
             BlockManager.ExportBlock(block, path);
+            Debug.Log($"GenesisBlock created at {path}");
         }
     }
 }

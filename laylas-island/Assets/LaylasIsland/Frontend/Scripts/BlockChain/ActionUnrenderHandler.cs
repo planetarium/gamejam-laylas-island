@@ -29,7 +29,7 @@ namespace LaylasIsland.Frontend.BlockChain
         {
             _renderer = renderer;
             _renderer.EveryUnrender<SignUp>()
-                .Where(ValidateEvaluationForCurrentAgent)
+                .Where(ValidateEvaluationSignerEqualsAgent)
                 .ObserveOnMainThread()
                 .Subscribe(UnRenderSignUp)
                 .AddTo(_disposables);

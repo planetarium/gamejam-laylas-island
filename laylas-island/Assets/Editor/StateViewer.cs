@@ -78,7 +78,7 @@ namespace Editor
 
         private bool CheckPlaying()
         {
-            if (!Application.isPlaying || !MainController.Instance.IsInitialized)
+            if (!Application.isPlaying || !MainController.Instance.HasSignedIn)
             {
                 Debug.Log("You can use this feature in only play mode.");
                 return false;

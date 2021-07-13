@@ -378,11 +378,11 @@ namespace LaylasIsland.Frontend.BlockChain
             // };
             PreloadEnded += (_, __) =>
             {
-                Currency goldCurrency = new GoldCurrencyState(
+                var goldCurrency = new GoldCurrencyState(
                     (Dictionary) GetState(Addresses.GoldCurrency)
                 ).Currency;
                 States.Instance.SetAgentState(
-                    GetState(Address) is Bencodex.Types.Dictionary agentDict
+                    GetState(Address) is Dictionary agentDict
                         ? new AgentState(agentDict)
                         : new AgentState(Address));
                 States.Instance.SetGoldBalanceState(

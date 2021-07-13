@@ -11,6 +11,13 @@ namespace LaylasIsland.Frontend.BlockChain
     {
         public bool Pending;
         public Currency GoldCurrency { get; internal set; }
+        
+        protected static bool ValidateEvaluationSignerEqualsAgent<T>(BaseAction.ActionEvaluation<T> evaluation)
+            where T : BaseAction
+        {
+            return !(States.Instance.AgentState is null) &&
+                   evaluation.Signer.Equals(States.Instance.AgentState.Address);
+        }
 
         protected bool ValidateEvaluationForAgentState<T>(BaseAction.ActionEvaluation<T> evaluation)
             where T : BaseAction
@@ -33,14 +40,7 @@ namespace LaylasIsland.Frontend.BlockChain
 
             return evaluation.OutputStates.UpdatedFungibleAssets.ContainsKey(States.Instance.AgentState.Address);
         }
-
-        protected bool ValidateEvaluationForCurrentAgent<T>(BaseAction.ActionEvaluation<T> evaluation)
-            where T : BaseAction
-        {
-            return !(States.Instance.AgentState is null) &&
-                   evaluation.Signer.Equals(States.Instance.AgentState.Address);
-        }
-
+        
         protected AgentState GetAgentState<T>(BaseAction.ActionEvaluation<T> evaluation) where T : BaseAction
         {
             var agentAddress = States.Instance.AgentState.Address;

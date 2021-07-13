@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Bencodex.Types;
 using LaylasIsland.Backend.Action;
 using LaylasIsland.Backend.Renderer;
 using LaylasIsland.Backend.State;
 using LaylasIsland.Frontend.Extensions;
+using LaylasIsland.Frontend.State;
 using UnityEngine;
 
 namespace LaylasIsland.Frontend.BlockChain
@@ -36,7 +38,7 @@ namespace LaylasIsland.Frontend.BlockChain
         {
             _renderer = renderer;
             _renderer.EveryRender<SignUp>()
-                .Where(ValidateEvaluationForCurrentAgent)
+                .Where(ValidateEvaluationSignerEqualsAgent)
                 .ObserveOnMainThread()
                 .Subscribe(RenderSignUp)
                 .AddTo(_disposables);
@@ -47,16 +49,23 @@ namespace LaylasIsland.Frontend.BlockChain
             _disposables.DisposeAllAndClear();
         }
 
-        private void RenderSignUp(BaseAction.ActionEvaluation<SignUp> eval)
+        private static void RenderSignUp(BaseAction.ActionEvaluation<SignUp> eval)
         {
+            Debug.Log("Render SignUp");
             if (!(eval.Exception is null))
             {
                 Debug.LogError(eval.Exception.ToString());
                 return;
             }
 
-            var agent = eval.OutputStates.GetState(MainController.Instance.Agent.Address);
-            Debug.Log(agent);
+            var agentStateValue = eval.OutputStates.GetState(MainController.Instance.Agent.Address);
+            if (agentStateValue is null)
+            {
+                Debug.LogError($"{nameof(agentStateValue)} is null");
+                return;
+            }
+            
+            States.Instance.SetAgentState(new AgentState((Dictionary) agentStateValue));
         }
     }
 }
