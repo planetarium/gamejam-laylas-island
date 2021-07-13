@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
+using LaylasIsland.Backend.Action;
 using LaylasIsland.Backend.Renderer;
+using LaylasIsland.Backend.State;
 using LaylasIsland.Frontend.Extensions;
+using UnityEngine;
 
 namespace LaylasIsland.Frontend.BlockChain
 {
+    using UniRx;
     /// <summary>
     /// 현상태 : 각 액션의 랜더 단계에서 즉시 게임 정보에 반영시킴. 아바타를 선택하지 않은 상태에서 이전에 성공시키지 못한 액션을 재수행하고
     ///       이를 핸들링하면, 즉시 게임 정보에 반영시길 수 없기 때문에 에러가 발생함.
@@ -31,11 +35,28 @@ namespace LaylasIsland.Frontend.BlockChain
         public void Start(ActionRenderer renderer)
         {
             _renderer = renderer;
+            _renderer.EveryRender<SignUp>()
+                .Where(ValidateEvaluationForCurrentAgent)
+                .ObserveOnMainThread()
+                .Subscribe(RenderSignUp)
+                .AddTo(_disposables);
         }
 
         public void Stop()
         {
             _disposables.DisposeAllAndClear();
+        }
+
+        private void RenderSignUp(BaseAction.ActionEvaluation<SignUp> eval)
+        {
+            if (!(eval.Exception is null))
+            {
+                Debug.LogError(eval.Exception.ToString());
+                return;
+            }
+
+            var agent = eval.OutputStates.GetState(Game.Instance.Agent.Address);
+            Debug.Log(agent);
         }
     }
 }
