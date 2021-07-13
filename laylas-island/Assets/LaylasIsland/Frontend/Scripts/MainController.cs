@@ -57,24 +57,13 @@ namespace LaylasIsland.Frontend
             States = new States();
             LocalLayer = new LocalLayer();
             GameController = new GameController();
-
-            UIHolder.IntroCanvas.SetProgress(0f);
         }
 
         private IEnumerator Start()
         {
-            {
-                // Sign-in
-                const float targetProgress = .5f;
-                var progressDisposable = UIHolder.IntroCanvas
-                    .SetProgressAsObservable(targetProgress, 5f)
-                    .Subscribe();
-                yield return StartCoroutine(CoSignIn(succeed => HasSignedIn = succeed));
-
-                Debug.Log($"Agent has signed-in. {HasSignedIn}");
-                progressDisposable.Dispose();
-                UIHolder.IntroCanvas.SetProgress(targetProgress);
-            }
+            // Sign-in
+            yield return StartCoroutine(CoSignIn(succeed => HasSignedIn = succeed));
+            Debug.Log($"Agent has signed-in. {HasSignedIn}");
         }
 
         #endregion
@@ -82,19 +71,19 @@ namespace LaylasIsland.Frontend
         private IEnumerator CoSignIn(Action<bool> callback)
         {
             PrivateKey privateKey = null;
-            // if (string.IsNullOrEmpty(_options.PrivateKey))
-            // {
+            if (string.IsNullOrEmpty(_options.PrivateKey))
+            {
                 var onClickSigning = false;
                 UIHolder.IntroCanvas.OnClickSigning.First().Subscribe(_ => onClickSigning = true);
                 UIHolder.IntroCanvas.ShowSigning();
                 yield return new WaitUntil(() => onClickSigning);
 
                 privateKey = UIHolder.IntroCanvas.SelectedPrivateKey;
-            // }
-            // else
-            // {
-            //     privateKey = new PrivateKey(ByteUtil.ParseHex(_options.PrivateKey));
-            // }
+            }
+            else
+            {
+                privateKey = new PrivateKey(ByteUtil.ParseHex(_options.PrivateKey));
+            }
 
             Agent.Initialize(_options, privateKey, success =>
             {
@@ -102,9 +91,9 @@ namespace LaylasIsland.Frontend
                 {
                     throw new Exception("Agent initialization failed");
                 }
-                
+
                 ActionManager = new ActionManager(Agent);
-                
+
                 var agentStateValue = Agent.GetState(privateKey.ToAddress());
                 if (agentStateValue is null)
                 {
@@ -117,7 +106,7 @@ namespace LaylasIsland.Frontend
                             Debug.LogError(eval.Exception.ToString());
                             throw eval.Exception;
                         }
-                        
+
                         // Sign-in
                         UIHolder.LoadingCanvas.gameObject.SetActive(false);
                         UIHolder.IntroCanvas.gameObject.SetActive(false);

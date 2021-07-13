@@ -47,14 +47,22 @@
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0",
     "com.neuecc.unirx": "7.1.0",
-    "com.cysharp.unitask": "2.2.5"
+    "com.cysharp.unitask": "2.2.5",
+    "com.coffee.ui-effect": "4.0.0-preview.9",
+    "com.demigiant.dotween": "1.2.42",
+    "com.brunomikoski.animationsequencer": "0.1.6",
+    "com.coffee.atlas-image": "1.0.0"
   },
   "scopedRegistries": [
     {
       "name": "package.openupm.com",
       "url": "https://package.openupm.com",
       "scopes": [
+        "com.brunomikoski.animationsequencer",
+        "com.coffee.atlas-image",
+        "com.coffee.ui-effect",
         "com.cysharp.unitask",
+        "com.demigiant.dotween",
         "com.neuecc.unirx",
         "com.openupm"
       ]

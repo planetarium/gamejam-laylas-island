@@ -27,7 +27,6 @@ namespace LaylasIsland.Frontend.UI
 
         #region View
 
-        [SerializeField] private Slider _progress;
         [SerializeField] private Signing _signing;
 
         #endregion
@@ -96,7 +95,7 @@ namespace LaylasIsland.Frontend.UI
                         ProtectedPrivateKey.Protect(_createdPrivateKey, _signing.secretInputField.text);
                     Web3KeyStore.DefaultKeyStore.Add(ppk);
                 }
-                
+
                 OnClickSigning.OnNext(Unit.Default);
             }).AddTo(gameObject);
             // ~View
@@ -129,24 +128,10 @@ namespace LaylasIsland.Frontend.UI
         private void OnEnable()
         {
             UIHolder.HeaderCanvas.gameObject.SetActive(false);
-            _progress.value = 0f;
             _signing.rootGameObject.SetActive(false);
             _signing.secretInputField.text = string.Empty;
             _signing.button.interactable = false;
             _signing.buttonText.text = "Sign-in";
-        }
-
-        /// <param name="value">0...1</param>
-        public void SetProgress(float value) => _progress.value = math.max(0f, math.min(value, 1f));
-
-        /// <param name="value">0...1</param>
-        /// <param name="duration">Greater than 0</param>
-        public IObservable<float> SetProgressAsObservable(float value, float duration)
-        {
-            var delta = math.max(0f, math.min(value, 1f)) - _progress.value;
-            return Observable.EveryUpdate()
-                .Do(_ => _progress.value += delta * Time.deltaTime / duration)
-                .Select(_ => _progress.value);
         }
 
         public void ShowSigning()
