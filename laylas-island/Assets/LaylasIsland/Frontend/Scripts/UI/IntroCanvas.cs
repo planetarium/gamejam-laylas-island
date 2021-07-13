@@ -93,7 +93,7 @@ namespace LaylasIsland.Frontend.UI
         {
             if (_progress.value < 1f)
             {
-                _progress.value += Time.deltaTime * .2f;
+                _progress.value += Time.deltaTime;
             }
             else if (!_signing.rootGameObject.activeSelf)
             {
