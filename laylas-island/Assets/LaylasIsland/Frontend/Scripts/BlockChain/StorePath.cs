@@ -38,7 +38,6 @@ namespace LaylasIsland.Frontend.BlockChain
                 GetPrefixPath(),
                 dirname + Postfix
             );
-
         }
 
         public static string GetPrefixPath()

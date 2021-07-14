@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
+using LaylasIsland.Frontend.Game;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LaylasIsland.Frontend.UI
+namespace LaylasIsland.Frontend.UI.Canvases
 {
     using UniRx;
-
+    
     public class HeaderCanvas : MonoBehaviour
     {
         public enum Element
@@ -32,6 +33,18 @@ namespace LaylasIsland.Frontend.UI
 
         private void Awake()
         {
+            // Model
+            SharedGameModel.Player.Subscribe(player =>
+            {
+                if (player is null)
+                {
+                    return;
+                }
+                
+                player.portrait.Subscribe(value => Debug.Log(value));
+            }).AddTo(gameObject);
+            // ~Model
+            
             // View
             _backButton.OnClickAsObservable().Subscribe(_ =>
             {

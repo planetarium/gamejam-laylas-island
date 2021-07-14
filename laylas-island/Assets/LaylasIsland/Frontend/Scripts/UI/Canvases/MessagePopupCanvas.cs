@@ -1,12 +1,12 @@
 ﻿using System;
 using TMPro;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+using ObservableExtensions = UniRx.ObservableExtensions;
 
-namespace LaylasIsland.Frontend.UI
+namespace LaylasIsland.Frontend.UI.Canvases
 {
-    using UniRx;
-
     public class MessagePopupCanvas : MonoBehaviour
     {
         #region View
@@ -25,14 +25,14 @@ namespace LaylasIsland.Frontend.UI
 
         private void Awake()
         {
-            _leftButton.OnClickAsObservable().Subscribe(_ =>
+            ObservableExtensions.Subscribe(_leftButton.OnClickAsObservable(), _ =>
             {
                 // Play Click SFX
                 _leftButtonCallback?.Invoke();
                 gameObject.SetActive(false);
             }).AddTo(gameObject);
 
-            _rightButton.OnClickAsObservable().Subscribe(_ =>
+            ObservableExtensions.Subscribe(_rightButton.OnClickAsObservable(), _ =>
             {
                 // Play Click SFX
                 _rightButtonCallback?.Invoke();

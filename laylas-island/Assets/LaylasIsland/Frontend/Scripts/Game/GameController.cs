@@ -8,20 +8,10 @@ using UnityEngine;
 namespace LaylasIsland.Frontend.Game
 {
     using UniRx;
+    using Model = SharedGameModel;
 
     public class GameController : MonoSingleton<GameController>
     {
-        private enum State
-        {
-            None = 0,
-            Initializing,
-            InitializeFailed,
-            Prepare,
-            Play,
-            End,
-            Terminating,
-        }
-
         #region View
 
         [SerializeField] private GameNetworkManager _networkManager;
@@ -30,71 +20,127 @@ namespace LaylasIsland.Frontend.Game
 
         #endregion
 
-        #region Model
-
-        private readonly ReactiveProperty<State> _state = new ReactiveProperty<State>(default);
-
-        #endregion
-
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
+
+        private string _exceptionMessage;
+
+        private void Awake()
+        {
+            Model.State.Subscribe(OnStateChanged).AddTo(gameObject);
+        }
 
         private void OnDestroy()
         {
             _disposables.DisposeAllAndClear();
         }
 
-        public IObservable<Exception> InitializeAsObservable(GameNetworkManager.JoinOrCreateRoomOptions options)
+        #region Control
+
+        public IObservable<Exception> EnterAsObservable(GameNetworkManager.JoinOrCreateRoomOptions options)
         {
-            if (_state.Value != State.None &&
-                _state.Value != State.InitializeFailed)
+            if (Model.State.Value != GameState.None &&
+                Model.State.Value != GameState.InitializeFailed &&
+                Model.State.Value != GameState.Terminated)
             {
                 return Observable.Throw<Exception>(
-                    new Exception($"GameController.InitializeAsObservable() state: {_state.Value}"));
+                    new Exception($"GameController.InitializeAsObservable() state: {Model.State.Value}"));
             }
 
-            _state.Value = State.Initializing;
+            Model.State.Value = GameState.Initializing;
             StartCoroutine(CoInitialize(options));
-            return _state.Where(value => value == State.InitializeFailed || value == State.Prepare)
+            return Model.State.Where(value => value == GameState.InitializeFailed || value == GameState.Prepare)
                 .Select(_ =>
                 {
-                    switch (_state.Value)
+                    switch (Model.State.Value)
                     {
-                        case State.InitializeFailed:
-                            return new Exception("GameController.InitializeAsObservable() initialize failed");
-                        case State.Prepare:
+                        case GameState.InitializeFailed:
+                            return new Exception(_exceptionMessage);
+                        case GameState.Prepare:
                             return null;
                         default:
-                            throw new ArgumentOutOfRangeException(nameof(_state), _state.Value, null);
+                            throw new ArgumentOutOfRangeException(nameof(Model.State), Model.State.Value, null);
                     }
                 })
                 .First();
         }
 
-        public IObservable<Exception> TerminateAsObservable()
+        public IObservable<Exception> LeaveAsObservable()
         {
-            if (_state.Value == State.None ||
-                _state.Value == State.InitializeFailed)
+            if (Model.State.Value == GameState.None ||
+                Model.State.Value == GameState.InitializeFailed)
             {
                 return Observable.Throw<Exception>(
-                    new Exception($"GameController.TerminateAsObservable() state: {_state.Value}"));
+                    new Exception($"GameController.TerminateAsObservable() state: {Model.State.Value}"));
             }
 
-            _board.Terminate(() => _state.Value = State.None);
+            Model.State.Value = GameState.Terminating;
+            StartCoroutine(CoTerminate());
+            return Model.State.Where(value => value == GameState.None || value == GameState.Terminated)
+                .Select(_ => (Exception) null)
+                .First();
+        }
 
-            return _state.Where(value => value == State.None).Select(_ => (Exception) null);
+        #endregion
+
+        private static void OnStateChanged(GameState state)
+        {
+            switch (state)
+            {
+                case GameState.None:
+                case GameState.Initializing:
+                case GameState.InitializeFailed:
+                    break;
+                case GameState.Prepare:
+                    break;
+                case GameState.Play:
+                    break;
+                case GameState.End:
+                    break;
+                case GameState.Terminating:
+                    break;
+                case GameState.Terminated:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(state), state, null);
+            }
         }
 
         private IEnumerator CoInitialize(GameNetworkManager.JoinOrCreateRoomOptions options)
         {
+            var failed = false;
             var done = false;
-            _networkManager.JoinOrCreateRoom(options).Subscribe(_ => done = true);
+            _networkManager.JoinOrCreateRoom(options).Subscribe(tuple =>
+            {
+                var (succeed, errorMessage) = tuple;
+                failed = !succeed;
+                _exceptionMessage = errorMessage;
+                done = true;
+            });
             yield return new WaitUntil(() => done);
+            if (failed)
+            {
+                Model.State.Value = GameState.InitializeFailed;
+                yield break;
+            }
 
             done = false;
             _board.Initialize(() => done = true);
             yield return new WaitUntil(() => done);
 
-            _state.Value = State.Prepare;
+            Model.State.Value = GameState.Prepare;
+        }
+
+        private IEnumerator CoTerminate()
+        {
+            var done = false;
+            _networkManager.LeaveRoom().Subscribe(_ => done = true);
+            yield return new WaitUntil(() => done);
+
+            done = false;
+            _board.Terminate(() => done = true);
+            yield return new WaitUntil(() => done);
+
+            Model.State.Value = GameState.Terminated;
         }
     }
 }
