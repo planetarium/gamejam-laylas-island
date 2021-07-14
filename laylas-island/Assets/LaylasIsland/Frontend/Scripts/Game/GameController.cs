@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Boscohyun;
-using Cysharp.Threading.Tasks;
 using LaylasIsland.Frontend.Extensions;
 using UnityEngine;
 
@@ -25,6 +24,7 @@ namespace LaylasIsland.Frontend.Game
 
         #region View
 
+        [SerializeField] private GameNetworkManager _networkManager;
         [SerializeField] private Board _board;
 
         #endregion
@@ -42,7 +42,7 @@ namespace LaylasIsland.Frontend.Game
             _disposables.DisposeAllAndClear();
         }
 
-        public IObservable<Exception> InitializeAsObservable(string gameName, string password)
+        public IObservable<Exception> InitializeAsObservable(GameNetworkManager.JoinOrCreateRoomOptions options)
         {
             if (_state.Value != State.None &&
                 _state.Value != State.InitializeFailed)
@@ -51,7 +51,8 @@ namespace LaylasIsland.Frontend.Game
                     new Exception($"GameController.InitializeAsObservable() state: {_state.Value}"));
             }
 
-            Initialize();
+            _state.Value = State.Initializing;
+            StartCoroutine(CoInitialize(options));
             return _state.Where(value => value == State.InitializeFailed || value == State.Prepare)
                 .Select(_ =>
                 {
@@ -64,7 +65,8 @@ namespace LaylasIsland.Frontend.Game
                         default:
                             throw new ArgumentOutOfRangeException(nameof(_state), _state.Value, null);
                     }
-                });
+                })
+                .First();
         }
 
         public IObservable<Exception> TerminateAsObservable()
@@ -85,16 +87,18 @@ namespace LaylasIsland.Frontend.Game
             return _state.Where(value => value == State.None).Select(_ => (Exception) null);
         }
 
-        private void Initialize()
+        private IEnumerator CoInitialize(GameNetworkManager.JoinOrCreateRoomOptions options)
         {
-            Debug.Log("Initialize() enter");
-            _state.Value = State.Initializing;
+            var done = false;
+            _networkManager.JoinOrCreateRoom(options).Subscribe(_ => done = true);
+            yield return new WaitUntil(() => done);
+            
+            done = false;
             _board.gameObject.SetActive(true);
-            _board.Initialize(() =>
-            {
-                _state.Value = State.Prepare;
-                Debug.Log("Initialize() exit");
-            });
+            _board.Initialize(() => done = true);
+            yield return new WaitUntil(() => done);
+            
+            _state.Value = State.Prepare;
         }
     }
 }
