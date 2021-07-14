@@ -1,10 +1,10 @@
+using LaylasIsland.Frontend.UI;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LaylasIsland.Frontend.UI
+namespace LaylasIsland.Frontend.UI.Canvases
 {
-    using UniRx;
-
     public class MainCanvas : MonoBehaviour
     {
         #region View

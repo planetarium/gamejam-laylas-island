@@ -43,6 +43,8 @@ namespace LaylasIsland.Frontend
             {
                 return;
             }
+            
+            Screen.SetResolution(1920, 1080, FullScreenMode.Windowed);
 
             _options = CommandLineOptions.Load(CommandLineOptionsJsonPath);
             if (_options.RpcClient)
@@ -59,7 +61,14 @@ namespace LaylasIsland.Frontend
         private IEnumerator Start()
         {
             // Sign-in
-            yield return StartCoroutine(CoSignIn(succeed => HasSignedIn = succeed));
+            yield return StartCoroutine(CoSignIn(succeed =>
+            {
+                HasSignedIn = succeed;
+
+                SharedGameModel.Player.Value = new Player(States.Instance.AgentState.Address);
+                UIHolder.IntroCanvas.gameObject.SetActive(false);
+                UIHolder.MainCanvas.gameObject.SetActive(true);
+            }));
             Debug.Log($"Agent has signed-in. {HasSignedIn}");
         }
 
@@ -106,8 +115,6 @@ namespace LaylasIsland.Frontend
 
                         // Sign-in
                         UIHolder.LoadingCanvas.gameObject.SetActive(false);
-                        UIHolder.IntroCanvas.gameObject.SetActive(false);
-                        UIHolder.MainCanvas.gameObject.SetActive(true);
                         callback?.Invoke(success);
                     });
                 }
@@ -115,8 +122,6 @@ namespace LaylasIsland.Frontend
                 {
                     // Sign-in
                     States.Instance.SetAgentState(new AgentState((Dictionary) agentStateValue));
-                    UIHolder.IntroCanvas.gameObject.SetActive(false);
-                    UIHolder.MainCanvas.gameObject.SetActive(true);
                     callback?.Invoke(success);
                 }
             });

@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using LaylasIsland.Frontend.UI;
+using UnityEngine;
 using UnityEngine.UI;
 
-namespace LaylasIsland.Frontend.UI
+namespace LaylasIsland.Frontend.UI.Canvases
 {
     public class LoadingCanvas : MonoBehaviour
     {

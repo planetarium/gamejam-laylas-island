@@ -20,5 +20,7 @@ namespace LaylasIsland.Backend.Extensions
         }
 
         public static Address Derive(this Address address, string key) => address.Derive(Encoding.UTF8.GetBytes(key));
+        
+        public static string ToSimpleHex(this Address address) => address.ToHex().Substring(0, 8);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace LaylasIsland.Frontend.Game.Modules
+namespace LaylasIsland.Frontend.Game.Views
 {
     public class Character : MonoBehaviour
     {

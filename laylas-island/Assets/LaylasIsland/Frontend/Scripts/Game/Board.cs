@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace LaylasIsland.Frontend.Game
 {
-    using Modules;
+    using Views;
     
     public class Board : MonoBehaviour
     {
