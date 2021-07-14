@@ -26,6 +26,7 @@ namespace LaylasIsland.Frontend.Game
 
         [SerializeField] private GameNetworkManager _networkManager;
         [SerializeField] private Board _board;
+        [SerializeField] private Transform _objectsRoot;
 
         #endregion
 
