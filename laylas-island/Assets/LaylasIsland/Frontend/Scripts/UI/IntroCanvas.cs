@@ -5,7 +5,7 @@ using Libplanet;
 using Libplanet.Crypto;
 using Libplanet.KeyStore;
 using TMPro;
-using Unity.Mathematics;
+using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -84,6 +84,10 @@ namespace LaylasIsland.Frontend.UI
 
                 UnprotectSelected(value);
             }).AddTo(gameObject);
+
+            _signing.secretInputField.onEndEdit.AsObservable()
+                .Subscribe(value => _signing.button.onClick.Invoke())
+                .AddTo(gameObject);
 
             _signing.button.OnClickAsObservable().Subscribe(_ =>
             {

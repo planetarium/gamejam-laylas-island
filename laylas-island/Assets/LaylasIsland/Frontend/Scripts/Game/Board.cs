@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
+using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
 
 namespace LaylasIsland.Frontend.Game
 {
+    using Modules;
+    
     public class Board : MonoBehaviour
     {
         /*
@@ -23,42 +24,42 @@ namespace LaylasIsland.Frontend.Game
 
         #region View
 
-        [SerializeField] private Tile _tilePrefab;
+        [SerializeField] private List<Tile> _tiles;
+        [SerializeField] private List<Tile> _startPoints;
+        [SerializeField] private int _tilesSortingOrderMin;
 
         #endregion
 
-        private const int tileCount = 41;
-        private readonly List<Tile> _tiles = new List<Tile>();
-        private Action _initializeCallback;
+        public IReadOnlyList<Tile> Tiles => _tiles;
+        public IReadOnlyList<Tile> StartPoints => _startPoints;
 
+        private void Reset()
+        {
+            _tiles = transform.GetComponentsInChildren<Tile>().ToList();
+            InitializeTiles();
+        }
+
+        // NOTE: 추후에 다양한 종류의 보드로 초기화할 수 있게 합니다.
+        // e.i., Initialize(boardData, callback);
         public void Initialize(Action callback)
         {
-            _initializeCallback = callback;
-            StartCoroutine(SpawnTiles());
+            InitializeTiles();
+            gameObject.SetActive(true);
+            callback?.Invoke();
         }
 
         public void Terminate(Action callback)
         {
-            for (var i = 0; i < tileCount; i++)
-            {
-                Destroy(_tiles[i]);
-            }
-            
+            gameObject.SetActive(false);
             callback?.Invoke();
         }
 
-        private IEnumerator SpawnTiles()
+        private void InitializeTiles()
         {
-            for (var i = 0; i < tileCount; i++)
+            for (var i = _tiles.Count; i > 0; i--)
             {
-                var tile = Instantiate(_tilePrefab, transform);
-                tile.Initialize(i, GetLocalPosition(i));
-                _tiles.Add(tile);
-                
-                yield return null;
+                _tiles[i - 1].SetSortingOrderMin(_tilesSortingOrderMin);
             }
-            
-            _initializeCallback?.Invoke();
         }
 
         private static int2 GetLocalPosition(int index)

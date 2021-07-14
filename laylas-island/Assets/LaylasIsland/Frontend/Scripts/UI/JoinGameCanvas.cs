@@ -11,7 +11,7 @@ namespace LaylasIsland.Frontend.UI
         #region View
 
         [SerializeField] private CreateGameCanvas.SelectPeople _selectPeople;
-        [SerializeField] private TMP_InputField _nameInputField;
+        [SerializeField] private TMP_InputField _roomNameInputField;
         [SerializeField] private TMP_InputField _passwordInputField;
         [SerializeField] private Button _joinButton;
 
@@ -59,8 +59,11 @@ namespace LaylasIsland.Frontend.UI
                 // Play Click SFX
                 gameObject.SetActive(false);
                 UIHolder.LoadingCanvas.gameObject.SetActive(true);
-                GameController.Instance.InitializeAsObservable("Game Room Name", string.Empty)
-                    .First()
+                GameController.Instance.InitializeAsObservable(new GameNetworkManager.JoinOrCreateRoomOptions(
+                        GameNetworkManager.JoinOrCreate.Join,
+                        "Game Room Name", // _roomNameInputField.text,
+                        _passwordInputField.text
+                    ))
                     .Subscribe(e =>
                     {
                         if (e is null)
