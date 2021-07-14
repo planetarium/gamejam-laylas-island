@@ -25,22 +25,41 @@ namespace LaylasIsland.Frontend.Game
         #region View
 
         [SerializeField] private List<Tile> _tiles;
+        [SerializeField] private List<Tile> _startPoints;
+        [SerializeField] private int _tilesSortingOrderMin;
 
         #endregion
+
+        public IReadOnlyList<Tile> Tiles => _tiles;
+        public IReadOnlyList<Tile> StartPoints => _startPoints;
 
         private void Reset()
         {
             _tiles = transform.GetComponentsInChildren<Tile>().ToList();
+            InitializeTiles();
         }
 
+        // NOTE: 추후에 다양한 종류의 보드로 초기화할 수 있게 합니다.
+        // e.i., Initialize(boardData, callback);
         public void Initialize(Action callback)
         {
+            InitializeTiles();
+            gameObject.SetActive(true);
             callback?.Invoke();
         }
 
         public void Terminate(Action callback)
         {
+            gameObject.SetActive(false);
             callback?.Invoke();
+        }
+
+        private void InitializeTiles()
+        {
+            for (var i = _tiles.Count; i > 0; i--)
+            {
+                _tiles[i - 1].SetSortingOrderMin(_tilesSortingOrderMin);
+            }
         }
 
         private static int2 GetLocalPosition(int index)

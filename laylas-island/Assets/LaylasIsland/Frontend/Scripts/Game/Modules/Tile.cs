@@ -1,5 +1,4 @@
-﻿using Unity.Mathematics;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace LaylasIsland.Frontend.Game.Modules
 {
@@ -8,17 +7,21 @@ namespace LaylasIsland.Frontend.Game.Modules
         #region View
 
         [SerializeField] private TileSpritesSO _tileSpritesSo;
-        [SerializeField] private SpriteRenderer _background;
+        [SerializeField] private SpriteRenderer _spriteRenderer;
+        [SerializeField] private int _index;
 
         #endregion
-        
-        private int _index;
 
-        public void Initialize(int index, int2 localPosition)
+        public int SortingOrder => _spriteRenderer.sortingOrder;
+
+        private void Awake()
         {
-            _index = index;
-            transform.localPosition = new Vector3(localPosition.x, localPosition.y, 0f);
-            name = $"{nameof(Tile)} {_index:00} ({localPosition.x}, {localPosition.y})";
+            name = $"{nameof(Tile)} {_index:00}";
+        }
+
+        public void SetSortingOrderMin(int value)
+        {
+            _spriteRenderer.sortingOrder = value + _index;
         }
     }
 }

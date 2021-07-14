@@ -78,11 +78,7 @@ namespace LaylasIsland.Frontend.Game
                     new Exception($"GameController.TerminateAsObservable() state: {_state.Value}"));
             }
 
-            _board.Terminate(() =>
-            {
-                _board.gameObject.SetActive(false);
-                _state.Value = State.None;
-            });
+            _board.Terminate(() => _state.Value = State.None);
 
             return _state.Where(value => value == State.None).Select(_ => (Exception) null);
         }
@@ -92,12 +88,11 @@ namespace LaylasIsland.Frontend.Game
             var done = false;
             _networkManager.JoinOrCreateRoom(options).Subscribe(_ => done = true);
             yield return new WaitUntil(() => done);
-            
+
             done = false;
-            _board.gameObject.SetActive(true);
             _board.Initialize(() => done = true);
             yield return new WaitUntil(() => done);
-            
+
             _state.Value = State.Prepare;
         }
     }
