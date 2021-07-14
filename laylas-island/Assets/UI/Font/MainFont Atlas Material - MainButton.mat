@@ -65,12 +65,12 @@ Material:
     - _OutlineSoftness: 0
     - _OutlineUVSpeedX: 20
     - _OutlineUVSpeedY: 4
-    - _OutlineWidth: 0.09
+    - _OutlineWidth: 0
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
     - _ScaleRatioA: 0.9
     - _ScaleRatioB: 0.374625
-    - _ScaleRatioC: 0.53902876
+    - _ScaleRatioC: 0.4185754
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -84,8 +84,8 @@ Material:
     - _TextureHeight: 1024
     - _TextureWidth: 1024
     - _UnderlayDilate: 1
-    - _UnderlayOffsetX: 0
-    - _UnderlayOffsetY: -0.39
+    - _UnderlayOffsetX: -0.24
+    - _UnderlayOffsetY: -0.79
     - _UnderlaySoftness: 0
     - _VertexOffsetX: 0
     - _VertexOffsetY: 0

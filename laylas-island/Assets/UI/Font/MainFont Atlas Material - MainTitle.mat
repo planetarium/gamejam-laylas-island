@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MainFont Atlas Material - MainButton
+  m_Name: MainFont Atlas Material - MainTitle
   m_Shader: {fileID: 4800000, guid: 68e6db2ebdc24f95958faec2be5558d6, type: 3}
   m_ShaderKeywords: BEVEL_ON GLOW_ON UNDERLAY_ON
   m_LightmapFlags: 4
@@ -41,36 +41,36 @@ Material:
         m_Scale: {x: 20, y: 4}
         m_Offset: {x: 20, y: 20}
     m_Floats:
-    - _Ambient: 0.05
-    - _Bevel: 0
-    - _BevelClamp: 0.29
-    - _BevelOffset: 0.5
-    - _BevelRoundness: 0
+    - _Ambient: 1
+    - _Bevel: 0.62
+    - _BevelClamp: 0.39
+    - _BevelOffset: -0.13
+    - _BevelRoundness: 0.58
     - _BevelWidth: 0.5
     - _BumpFace: 0
     - _BumpOutline: 0
     - _ColorMask: 15
-    - _Diffuse: 0
+    - _Diffuse: 0.28
     - _FaceDilate: -0.02
     - _FaceUVSpeedX: 0
     - _FaceUVSpeedY: 0
-    - _GlowInner: 1
+    - _GlowInner: 0.55
     - _GlowOffset: 1
     - _GlowOuter: 1
-    - _GlowPower: 1
+    - _GlowPower: 0.4
     - _GradientScale: 10
-    - _LightAngle: 6.28
+    - _LightAngle: 3
     - _MaskSoftnessX: 0
     - _MaskSoftnessY: 0
     - _OutlineSoftness: 0
     - _OutlineUVSpeedX: 20
     - _OutlineUVSpeedY: 4
-    - _OutlineWidth: 0.09
+    - _OutlineWidth: 0.07
     - _PerspectiveFilter: 0.875
-    - _Reflectivity: 10
+    - _Reflectivity: 9.2
     - _ScaleRatioA: 0.9
     - _ScaleRatioB: 0.374625
-    - _ScaleRatioC: 0.53902876
+    - _ScaleRatioC: 0.3822704
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -86,7 +86,7 @@ Material:
     - _UnderlayDilate: 1
     - _UnderlayOffsetX: 0
     - _UnderlayOffsetY: -0.39
-    - _UnderlaySoftness: 0
+    - _UnderlaySoftness: 0.57
     - _VertexOffsetX: 0
     - _VertexOffsetY: 0
     - _WeightBold: 0.75
@@ -94,12 +94,12 @@ Material:
     m_Colors:
     - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
     - _EnvMatrixRotation: {r: 6, g: 6, b: 0, a: 0}
-    - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FaceColor: {r: 0.740566, g: 0.88303596, b: 1, a: 1}
     - _GlowColor: {r: 0, g: 0, b: 0, a: 1}
     - _MaskCoord: {r: 0, g: 0, b: 32767, a: 32767}
     - _OutlineColor: {r: 1, g: 1, b: 1, a: 0.53333336}
     - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
-    - _SpecularColor: {r: 0, g: 0, b: 0, a: 1}
-    - _UnderlayColor: {r: 1, g: 1, b: 1, a: 0.627451}
+    - _SpecularColor: {r: 0.4764151, g: 0.67186075, b: 1, a: 1}
+    - _UnderlayColor: {r: 0.021224555, g: 0.019090427, b: 0.103773594, a: 0.627451}
   m_BuildTextureStacks: []
