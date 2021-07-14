@@ -1,13 +1,14 @@
 ﻿using Unity.Mathematics;
 using UnityEngine;
 
-namespace LaylasIsland.Frontend.Game
+namespace LaylasIsland.Frontend.Game.Modules
 {
     public class Tile : MonoBehaviour
     {
         #region View
 
-        [SerializeField] private SpriteRenderer _spriteRenderer;
+        [SerializeField] private TileSpritesSO _tileSpritesSo;
+        [SerializeField] private SpriteRenderer _background;
 
         #endregion
         
@@ -18,9 +19,6 @@ namespace LaylasIsland.Frontend.Game
             _index = index;
             transform.localPosition = new Vector3(localPosition.x, localPosition.y, 0f);
             name = $"{nameof(Tile)} {_index:00} ({localPosition.x}, {localPosition.y})";
-            _spriteRenderer.color = _index % 2 == 0
-                ? Color.green
-                : Color.gray;
         }
     }
 }

@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
+using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
 
 namespace LaylasIsland.Frontend.Game
 {
+    using Modules;
+    
     public class Board : MonoBehaviour
     {
         /*
@@ -23,42 +24,23 @@ namespace LaylasIsland.Frontend.Game
 
         #region View
 
-        [SerializeField] private Tile _tilePrefab;
+        [SerializeField] private List<Tile> _tiles;
 
         #endregion
 
-        private const int tileCount = 41;
-        private readonly List<Tile> _tiles = new List<Tile>();
-        private Action _initializeCallback;
+        private void Reset()
+        {
+            _tiles = transform.GetComponentsInChildren<Tile>().ToList();
+        }
 
         public void Initialize(Action callback)
         {
-            _initializeCallback = callback;
-            StartCoroutine(SpawnTiles());
+            callback?.Invoke();
         }
 
         public void Terminate(Action callback)
         {
-            for (var i = 0; i < tileCount; i++)
-            {
-                Destroy(_tiles[i]);
-            }
-            
             callback?.Invoke();
-        }
-
-        private IEnumerator SpawnTiles()
-        {
-            for (var i = 0; i < tileCount; i++)
-            {
-                var tile = Instantiate(_tilePrefab, transform);
-                tile.Initialize(i, GetLocalPosition(i));
-                _tiles.Add(tile);
-                
-                yield return null;
-            }
-            
-            _initializeCallback?.Invoke();
         }
 
         private static int2 GetLocalPosition(int index)
