@@ -13,7 +13,6 @@ namespace LaylasIsland.Frontend.UI
 
         [SerializeField] private TextMeshProUGUI _headerText;
         [SerializeField] private TextMeshProUGUI _bodyText;
-        [SerializeField] private TextMeshProUGUI _footerText;
         [SerializeField] private Button _leftButton;
         [SerializeField] private TextMeshProUGUI _leftButtonText;
         [SerializeField] private Button _rightButton;
@@ -41,64 +40,40 @@ namespace LaylasIsland.Frontend.UI
             }).AddTo(gameObject);
         }
 
-        public void ShowWithoutButtons(string header, string body, string footer)
+        public void ShowWithoutButtons(string header, string body)
         {
-            SetTexts(header, body, footer);
+            SetTexts(header, body);
             SetButtons(string.Empty, null, string.Empty, null);
             gameObject.SetActive(true);
         }
 
-        public void ShowWithoutButtons(string header, string body) =>
-            ShowWithoutButtons(header, body, string.Empty);
-
         public void ShowWithoutButtons(string body) =>
-            ShowWithoutButtons(string.Empty, body, string.Empty);
+            ShowWithoutButtons(string.Empty, body);
 
-        public void ShowWithASingleButton(string header, string body, string footer, string buttonText,
-            Action buttonCallback)
+        public void ShowWithASingleButton(string header, string body, string buttonText, Action buttonCallback)
         {
-            SetTexts(header, body, footer);
+            SetTexts(header, body);
             SetButtons(buttonText, buttonCallback, string.Empty, null);
             gameObject.SetActive(true);
         }
 
-        public void ShowWithASingleButton(string header, string body, string buttonText, Action buttonCallback) =>
-            ShowWithASingleButton(header, body, string.Empty, buttonText, buttonCallback);
-
         public void ShowWithASingleButton(string body, string buttonText, Action buttonCallback) =>
-            ShowWithASingleButton(string.Empty, body, string.Empty, buttonText, buttonCallback);
+            ShowWithASingleButton(string.Empty, body, buttonText, buttonCallback);
 
         public void ShowWithACoupleOfButtons(
             string header,
             string body,
-            string footer,
             string leftButtonText,
             Action leftButtonCallback,
             string rightButtonText,
             Action rightButtonCallback)
         {
-            SetTexts(header, body, footer);
+            SetTexts(header, body);
             SetButtons(leftButtonText, leftButtonCallback, rightButtonText, rightButtonCallback);
             gameObject.SetActive(true);
         }
 
         public void ShowWithACoupleOfButtons(
-            string header,
-            string body,
-            string leftButtonText,
-            Action leftButtonCallback,
-            string rightButtonText,
-            Action rightButtonCallback) =>
-            ShowWithACoupleOfButtons(
-                header,
-                body,
-                string.Empty,
-                leftButtonText,
-                leftButtonCallback,
-                rightButtonText,
-                rightButtonCallback);
-
-        public void ShowWithACoupleOfButtons(
             string body,
             string leftButtonText,
             Action leftButtonCallback,
@@ -107,13 +82,12 @@ namespace LaylasIsland.Frontend.UI
             ShowWithACoupleOfButtons(
                 string.Empty,
                 body,
-                string.Empty,
                 leftButtonText,
                 leftButtonCallback,
                 rightButtonText,
                 rightButtonCallback);
 
-        private void SetTexts(string header, string body, string footer)
+        private void SetTexts(string header, string body)
         {
             if (string.IsNullOrEmpty(header))
             {
@@ -133,16 +107,6 @@ namespace LaylasIsland.Frontend.UI
             {
                 _bodyText.text = body;
                 _bodyText.enabled = true;
-            }
-
-            if (string.IsNullOrEmpty(footer))
-            {
-                _footerText.enabled = false;
-            }
-            else
-            {
-                _footerText.text = footer;
-                _footerText.enabled = true;
             }
         }
 

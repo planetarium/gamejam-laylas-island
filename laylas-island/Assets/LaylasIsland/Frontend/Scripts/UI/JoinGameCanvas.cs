@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using LaylasIsland.Frontend.Game;
+using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -58,7 +59,7 @@ namespace LaylasIsland.Frontend.UI
                 // Play Click SFX
                 gameObject.SetActive(false);
                 UIHolder.LoadingCanvas.gameObject.SetActive(true);
-                MainController.Instance.GameController.InitializeAsObservable("Game Room Name", string.Empty)
+                GameController.Instance.InitializeAsObservable("Game Room Name", string.Empty)
                     .First()
                     .Subscribe(e =>
                     {

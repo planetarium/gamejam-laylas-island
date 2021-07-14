@@ -34,5 +34,12 @@ namespace LaylasIsland.Frontend.UI
         
         [SerializeField] private MessagePopupCanvas _messagePopupCanvas;
         public static MessagePopupCanvas MessagePopupCanvas => Instance._messagePopupCanvas;
+
+        [SerializeField] private GameObject _outline;
+
+        private void Awake()
+        {
+            _outline.SetActive(false);
+        }
     }
 }

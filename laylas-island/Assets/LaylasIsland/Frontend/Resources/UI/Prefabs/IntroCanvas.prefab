@@ -2055,11 +2055,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _signing:
-    rootGameObject: {fileID: 0}
-    selectAddress: {fileID: 0}
-    secretInputField: {fileID: 0}
-    button: {fileID: 0}
-    buttonText: {fileID: 0}
+    rootGameObject: {fileID: 5620034049802218572}
+    selectAddress: {fileID: 5458794862036246409}
+    secretInputField: {fileID: 6676272108577026322}
+    button: {fileID: 4712836597173105759}
+    buttonText: {fileID: 3520471580919063969}
 --- !u!1 &8418115832922772133
 GameObject:
   m_ObjectHideFlags: 0
