@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 8947543651209746669}
   - component: {fileID: 8121241078973907385}
   m_Layer: 5
-  m_Name: Icon
+  m_Name: Portrait
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -161,8 +161,9 @@ GameObject:
   - component: {fileID: 4653187464362161931}
   - component: {fileID: 7737477555113355092}
   - component: {fileID: 6460271420198249105}
+  - component: {fileID: 7830287208740197601}
   m_Layer: 5
-  m_Name: UesrProfile_Ally
+  m_Name: PlayerPortrait_Blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -228,6 +229,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7830287208740197601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7937152675507040233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 837853af71ad4edda13e97f64e28c2ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spritesSo: {fileID: 11400000, guid: cb1dd1db1dc568543bbc277d08858623, type: 2}
+  _portrait: {fileID: 8121241078973907385}
 --- !u!1 &8800532416542780141
 GameObject:
   m_ObjectHideFlags: 0
