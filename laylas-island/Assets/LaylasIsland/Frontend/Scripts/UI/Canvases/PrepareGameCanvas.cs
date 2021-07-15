@@ -70,12 +70,12 @@ namespace LaylasIsland.Frontend.UI.Canvases
                 else if (value > 0)
                 {
                     _countdownText.text = value.ToString();
-                    _countdownText.gameObject.SetActive(false);
+                    _countdownText.gameObject.SetActive(true);
                 }
                 else
                 {
                     _countdownText.text = "GO!";
-                    _countdownText.gameObject.SetActive(false);
+                    _countdownText.gameObject.SetActive(true);
                 }
             }).AddTo(_disposablesOnEnable);
 

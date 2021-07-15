@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using LaylasIsland.Frontend.UI;
 using UnityEngine;
 
 namespace LaylasIsland.Frontend.Game.GameStateBehaviours
@@ -8,16 +9,20 @@ namespace LaylasIsland.Frontend.Game.GameStateBehaviours
         public void Enter()
         {
             Debug.Log($"[{nameof(PlayBehaviour)}] {nameof(Exit)}()");
+
+            UIHolder.PlayGameCanvas.gameObject.SetActive(true);
         }
 
         public IEnumerator CoUpdate()
         {
-            throw new System.NotImplementedException();
+            yield break;
         }
 
         public void Exit()
         {
             Debug.Log($"[{nameof(PlayBehaviour)}] {nameof(Exit)}()");
+            
+            UIHolder.PlayGameCanvas.gameObject.SetActive(false);
         }
     }
 }
