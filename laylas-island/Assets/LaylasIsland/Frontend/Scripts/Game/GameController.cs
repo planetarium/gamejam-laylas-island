@@ -76,19 +76,6 @@ namespace LaylasIsland.Frontend.Game
             Model.State.Value = GameState.Terminating;
         }
 
-        public GameObject CreatePlayerCharacter()
-        {
-            var go =
-                PhotonNetwork.Instantiate("Game/Prefabs/PlayerCharacter", Vector3.zero, Quaternion.identity);
-            go.transform.SetParent(ObjectRoot);
-            return go;
-        }
-
-        public void DestroyPlayerCharacter(GameObject go)
-        {
-            PhotonNetwork.Destroy(go);
-        }
-
         #endregion
 
         private bool TryGetBehaviour<T>(GameState state, out T behaviour) where T : IGameStateBehaviour

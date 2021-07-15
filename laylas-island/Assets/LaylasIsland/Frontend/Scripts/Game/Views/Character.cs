@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace LaylasIsland.Frontend.Game.Views
 {
@@ -6,6 +7,20 @@ namespace LaylasIsland.Frontend.Game.Views
     {
         [SerializeField] private CharacterSpritesSO _characterSpritesSo;
         [SerializeField] private SpriteRenderer _spriteRenderer;
+
+        private void Awake()
+        {
+            _spriteRenderer.sprite = _characterSpritesSo.Sprites[Random.Range(0, _characterSpritesSo.Sprites.Count)];
+        }
+
+        public void MoveTo(Tile tile)
+        {
+            var localPosition = tile.transform.localPosition;
+            localPosition.z = 0f;
+            transform.localPosition = localPosition;
+
+            UpdateSortingOrder(tile.SortingOrder);
+        }
 
         public void UpdateSortingOrder(int tileOrder)
         {
