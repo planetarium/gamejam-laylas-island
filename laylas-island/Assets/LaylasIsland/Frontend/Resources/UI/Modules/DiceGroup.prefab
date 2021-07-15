@@ -259,6 +259,7 @@ GameObject:
   - component: {fileID: 48992727593463079}
   - component: {fileID: 48992727593463076}
   - component: {fileID: 48992727593463077}
+  - component: {fileID: 1489857294899602038}
   m_Layer: 5
   m_Name: DiceGroup
   m_TagString: Untagged
@@ -369,6 +370,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1489857294899602038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 48992727593463083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb4b80c2550340d68dc8feac9303456c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 48992727593463079}
+  _diceImage: {fileID: 48992726816795022}
+  _spritesSo: {fileID: 11400000, guid: 56927e89f26c580498ad0fe91094225c, type: 2}
 --- !u!1 &48992728416600689
 GameObject:
   m_ObjectHideFlags: 0
