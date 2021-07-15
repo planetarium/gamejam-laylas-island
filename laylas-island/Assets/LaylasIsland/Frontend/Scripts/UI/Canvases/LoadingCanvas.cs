@@ -13,7 +13,6 @@ namespace LaylasIsland.Frontend.UI.Canvases
         
         private void OnEnable()
         {
-            UIHolder.HeaderCanvas.gameObject.SetActive(false);
             _progress.value = 0f;
         }
 
