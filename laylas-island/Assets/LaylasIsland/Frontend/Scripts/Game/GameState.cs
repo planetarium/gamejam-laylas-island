@@ -4,11 +4,9 @@
     {
         None = 0,
         Initializing,
-        InitializeFailed,
         Prepare,
         Play,
         End,
         Terminating,
-        Terminated,
     }
 }

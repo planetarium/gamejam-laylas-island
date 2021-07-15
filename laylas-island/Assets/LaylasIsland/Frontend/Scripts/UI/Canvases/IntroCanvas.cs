@@ -1,18 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LaylasIsland.Frontend.UI;
 using Libplanet;
 using Libplanet.Crypto;
 using Libplanet.KeyStore;
 using TMPro;
-using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
-using ObservableExtensions = UniRx.ObservableExtensions;
 
 namespace LaylasIsland.Frontend.UI.Canvases
 {
+    using UniRx;
+
     public class IntroCanvas : MonoBehaviour
     {
         [Serializable]
@@ -47,8 +46,32 @@ namespace LaylasIsland.Frontend.UI.Canvases
 
         private void Awake()
         {
+            // Model
+            _signingOptionSource.Subscribe(optionSource =>
+            {
+                _signing.selectAddress.ClearOptions();
+                if (optionSource is null)
+                {
+                    _signing.selectAddress.AddOptions(new List<string> {"Create New One"});
+                    _signing.selectAddress.value = 0;
+                    return;
+                }
+
+                var options = optionSource
+                    .Select(e => e.Item2.Address.ToString())
+                    .ToList();
+                if (!_createdNewOne)
+                {
+                    options.Add("Create New One");
+                }
+
+                _signing.selectAddress.AddOptions(options);
+                _signing.selectAddress.value = 0;
+            }).AddTo(gameObject);
+            // ~Model
+
             // View
-            ObservableExtensions.Subscribe(_signing.selectAddress.onValueChanged.AsObservable(), index =>
+            _signing.selectAddress.onValueChanged.AsObservable().Subscribe(index =>
             {
                 // Play Click SFX
                 var selection = _signing.selectAddress.options[index];
@@ -73,7 +96,7 @@ namespace LaylasIsland.Frontend.UI.Canvases
                 }
             }).AddTo(gameObject);
 
-            ObservableExtensions.Subscribe(_signing.secretInputField.onValueChanged.AsObservable(), value =>
+            _signing.secretInputField.onValueChanged.AsObservable().Subscribe(value =>
             {
                 // Play Typing SFX
                 if (_createdNewOne &&
@@ -85,10 +108,10 @@ namespace LaylasIsland.Frontend.UI.Canvases
                 UnprotectSelected(value);
             }).AddTo(gameObject);
 
-            ObservableExtensions.Subscribe(_signing.secretInputField.onEndEdit.AsObservable(), value => _signing.button.onClick.Invoke())
+            _signing.secretInputField.onEndEdit.AsObservable().Subscribe(value => _signing.button.onClick.Invoke())
                 .AddTo(gameObject);
 
-            ObservableExtensions.Subscribe(_signing.button.OnClickAsObservable(), _ =>
+            _signing.button.OnClickAsObservable().Subscribe(_ =>
             {
                 // Play Click SFX
                 if (_createdNewOne &&
@@ -102,30 +125,6 @@ namespace LaylasIsland.Frontend.UI.Canvases
                 OnClickSigning.OnNext(Unit.Default);
             }).AddTo(gameObject);
             // ~View
-
-            // Model
-            ObservableExtensions.Subscribe(_signingOptionSource, optionSource =>
-            {
-                _signing.selectAddress.ClearOptions();
-                if (optionSource is null)
-                {
-                    _signing.selectAddress.AddOptions(new List<string> {"Create New One"});
-                    _signing.selectAddress.value = 0;
-                    return;
-                }
-
-                var options = optionSource
-                    .Select(e => e.Item2.Address.ToString())
-                    .ToList();
-                if (!_createdNewOne)
-                {
-                    options.Add("Create New One");
-                }
-
-                _signing.selectAddress.AddOptions(options);
-                _signing.selectAddress.value = 0;
-            }).AddTo(gameObject);
-            // ~Model
         }
 
         private void OnEnable()
