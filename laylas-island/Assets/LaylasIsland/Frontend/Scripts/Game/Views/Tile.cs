@@ -19,9 +19,9 @@ namespace LaylasIsland.Frontend.Game.Views
             name = $"{nameof(Tile)} {_index:00}";
         }
 
-        public void SetSortingOrderMin(int value)
+        public void UpdateSortingOrder(int maxOrder)
         {
-            _spriteRenderer.sortingOrder = value + _index;
+            _spriteRenderer.sortingOrder = maxOrder - _index;
         }
     }
 }
