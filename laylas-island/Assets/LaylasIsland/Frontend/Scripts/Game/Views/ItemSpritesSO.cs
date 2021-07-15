@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace LaylasIsland.Frontend.UI.Modules
+namespace LaylasIsland.Frontend.Game.Views
 {
-    [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/IconSpritesSO")]
-    public class IconSpritesSO : ScriptableObject
+    [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/ItemSpritesSO")]
+    public class ItemSpritesSO : ScriptableObject
     {
         [SerializeField] private List<Sprite> _sprites;
 

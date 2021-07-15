@@ -1,4 +1,5 @@
 ﻿using Boscohyun;
+using LaylasIsland.Frontend.UI.Canvases;
 using UnityEngine;
 
 namespace LaylasIsland.Frontend.UI

@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using LaylasIsland.Frontend.UI;
+using UnityEngine;
 
-namespace LaylasIsland.Frontend.UI
+namespace LaylasIsland.Frontend.UI.Canvases
 {
-    public class EndGameCanvas : MonoBehaviour
+    public class PlayGameCanvas : MonoBehaviour
     {
         private void OnEnable()
         {

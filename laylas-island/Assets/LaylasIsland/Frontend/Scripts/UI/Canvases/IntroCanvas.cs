@@ -1,18 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LaylasIsland.Frontend.UI;
 using Libplanet;
 using Libplanet.Crypto;
 using Libplanet.KeyStore;
 using TMPro;
-using UniRx.Triggers;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+using ObservableExtensions = UniRx.ObservableExtensions;
 
-namespace LaylasIsland.Frontend.UI
+namespace LaylasIsland.Frontend.UI.Canvases
 {
-    using UniRx;
-
     public class IntroCanvas : MonoBehaviour
     {
         [Serializable]
@@ -48,7 +48,7 @@ namespace LaylasIsland.Frontend.UI
         private void Awake()
         {
             // View
-            _signing.selectAddress.onValueChanged.AsObservable().Subscribe(index =>
+            ObservableExtensions.Subscribe(_signing.selectAddress.onValueChanged.AsObservable(), index =>
             {
                 // Play Click SFX
                 var selection = _signing.selectAddress.options[index];
@@ -73,7 +73,7 @@ namespace LaylasIsland.Frontend.UI
                 }
             }).AddTo(gameObject);
 
-            _signing.secretInputField.onValueChanged.AsObservable().Subscribe(value =>
+            ObservableExtensions.Subscribe(_signing.secretInputField.onValueChanged.AsObservable(), value =>
             {
                 // Play Typing SFX
                 if (_createdNewOne &&
@@ -85,11 +85,10 @@ namespace LaylasIsland.Frontend.UI
                 UnprotectSelected(value);
             }).AddTo(gameObject);
 
-            _signing.secretInputField.onEndEdit.AsObservable()
-                .Subscribe(value => _signing.button.onClick.Invoke())
+            ObservableExtensions.Subscribe(_signing.secretInputField.onEndEdit.AsObservable(), value => _signing.button.onClick.Invoke())
                 .AddTo(gameObject);
 
-            _signing.button.OnClickAsObservable().Subscribe(_ =>
+            ObservableExtensions.Subscribe(_signing.button.OnClickAsObservable(), _ =>
             {
                 // Play Click SFX
                 if (_createdNewOne &&
@@ -105,7 +104,7 @@ namespace LaylasIsland.Frontend.UI
             // ~View
 
             // Model
-            _signingOptionSource.Subscribe(optionSource =>
+            ObservableExtensions.Subscribe(_signingOptionSource, optionSource =>
             {
                 _signing.selectAddress.ClearOptions();
                 if (optionSource is null)
