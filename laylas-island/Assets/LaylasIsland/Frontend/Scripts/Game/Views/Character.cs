@@ -6,5 +6,10 @@ namespace LaylasIsland.Frontend.Game.Views
     {
         [SerializeField] private CharacterSpritesSO _characterSpritesSo;
         [SerializeField] private SpriteRenderer _spriteRenderer;
+
+        public void UpdateSortingOrder(int tileOrder)
+        {
+            _spriteRenderer.sortingOrder = tileOrder + 100;
+        }
     }
 }

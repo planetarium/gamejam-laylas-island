@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Boscohyun;
 using LaylasIsland.Frontend.Extensions;
 using LaylasIsland.Frontend.Game.GameStateBehaviours;
+using LaylasIsland.Frontend.Game.Views;
+using Photon.Pun;
 using UnityEngine;
 
 namespace LaylasIsland.Frontend.Game
@@ -27,6 +29,9 @@ namespace LaylasIsland.Frontend.Game
 
         private GameState _currentBehaviourState;
         private Coroutine _currentBehaviourCoroutine;
+
+        public Board Board => _board;
+        public Transform ObjectRoot => _objectsRoot;
 
         private void Awake()
         {
@@ -69,6 +74,19 @@ namespace LaylasIsland.Frontend.Game
             }
 
             Model.State.Value = GameState.Terminating;
+        }
+
+        public GameObject CreatePlayerCharacter()
+        {
+            var go =
+                PhotonNetwork.Instantiate("Game/Prefabs/PlayerCharacter", Vector3.zero, Quaternion.identity);
+            go.transform.SetParent(ObjectRoot);
+            return go;
+        }
+
+        public void DestroyPlayerCharacter(GameObject go)
+        {
+            PhotonNetwork.Destroy(go);
         }
 
         #endregion

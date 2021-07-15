@@ -56,9 +56,10 @@ namespace LaylasIsland.Frontend.Game
 
         private void InitializeTiles()
         {
+            var maxValue = _tilesSortingOrderMin + _tiles.Count - 1;
             for (var i = _tiles.Count; i > 0; i--)
             {
-                _tiles[i - 1].SetSortingOrderMin(_tilesSortingOrderMin);
+                _tiles[i - 1].UpdateSortingOrder(maxValue);
             }
         }
 

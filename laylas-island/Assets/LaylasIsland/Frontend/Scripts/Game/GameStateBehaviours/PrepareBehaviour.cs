@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using LaylasIsland.Frontend.Extensions;
+using LaylasIsland.Frontend.Game.Views;
 using LaylasIsland.Frontend.UI;
 using UnityEngine;
 
