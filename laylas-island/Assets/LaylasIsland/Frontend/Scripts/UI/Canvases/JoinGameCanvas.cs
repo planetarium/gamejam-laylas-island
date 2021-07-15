@@ -27,7 +27,7 @@ namespace LaylasIsland.Frontend.UI.Canvases
                 UIHolder.LoadingCanvas.gameObject.SetActive(true);
                 GameController.Instance.EnterAsObservable(new GameNetworkManager.JoinOrCreateRoomOptions(
                         GameNetworkManager.JoinOrCreate.Join,
-                        "Game Room Name", // _roomNameInputField.text,
+                        _roomNameInputField.text,
                         _passwordInputField.text
                     ))
                     .Subscribe(e =>
