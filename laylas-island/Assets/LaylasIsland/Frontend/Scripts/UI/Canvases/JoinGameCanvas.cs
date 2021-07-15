@@ -1,4 +1,7 @@
-﻿using LaylasIsland.Frontend.Game;
+﻿using System;
+using System.Collections.Generic;
+using LaylasIsland.Frontend.Extensions;
+using LaylasIsland.Frontend.Game;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +20,8 @@ namespace LaylasIsland.Frontend.UI.Canvases
 
         #endregion
 
+        private readonly List<IDisposable> _disposablesOnEnable = new List<IDisposable>();
+
         private void Awake()
         {
             // View
@@ -34,6 +39,10 @@ namespace LaylasIsland.Frontend.UI.Canvases
 
         private void OnEnable()
         {
+            SharedGameModel.IsNetworkReady
+                .Subscribe(value => _joinButton.interactable = value)
+                .AddTo(_disposablesOnEnable);
+
             UIHolder.HeaderCanvas.Show(
                 () =>
                 {
@@ -44,6 +53,11 @@ namespace LaylasIsland.Frontend.UI.Canvases
                 HeaderCanvas.Element.Player,
                 HeaderCanvas.Element.Gold,
                 HeaderCanvas.Element.Settings);
+        }
+
+        private void OnDisable()
+        {
+            _disposablesOnEnable.DisposeAllAndClear();
         }
     }
 }

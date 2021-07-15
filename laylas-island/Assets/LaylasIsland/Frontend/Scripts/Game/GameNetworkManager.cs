@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 namespace LaylasIsland.Frontend.Game
@@ -12,7 +13,8 @@ namespace LaylasIsland.Frontend.Game
     {
         public enum State
         {
-            ConnectingToMaster = 0,
+            None = 0,
+            ConnectingToMaster,
             ConnectedToMaster,
             JoinOrCreateRoom,
             JoinOrCreateRoomFailed,
@@ -154,8 +156,17 @@ namespace LaylasIsland.Frontend.Game
         public override void OnConnectedToMaster()
         {
             Debug.Log($"[{nameof(GameNetworkManager)}] {nameof(OnConnectedToMaster)}() enter");
+            Model.IsNetworkReady.Value = true;
             _stateMessage = string.Empty;
             _state.Value = State.ConnectedToMaster;
+        }
+
+        public override void OnDisconnected(DisconnectCause cause)
+        {
+            Debug.Log($"[{nameof(GameNetworkManager)}] {nameof(OnDisconnected)}() enter");
+            Model.IsNetworkReady.Value = false;
+            _stateMessage = String.Empty;
+            _state.Value = State.None;
         }
 
         public override void OnCreatedRoom()

@@ -8,7 +8,7 @@ namespace LaylasIsland.Frontend.Game.GameStateBehaviours
     {
         public void Enter()
         {
-            Debug.Log($"[{nameof(PlayBehaviour)}] {nameof(Exit)}()");
+            Debug.Log($"[{nameof(PlayBehaviour)}] {nameof(Enter)}()");
 
             UIHolder.PlayGameCanvas.gameObject.SetActive(true);
         }

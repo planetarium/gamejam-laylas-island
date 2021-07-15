@@ -91,8 +91,8 @@ namespace LaylasIsland.Frontend.UI.Canvases
 
         private void OnEnable()
         {
-            SharedGameModel.State.Where(value => value == GameState.Prepare)
-                .Subscribe(_ => gameObject.SetActive(false))
+            SharedGameModel.IsNetworkReady
+                .Subscribe(value => _createButton.interactable = value)
                 .AddTo(_disposablesOnEnable);
             
             UIHolder.HeaderCanvas.Show(
