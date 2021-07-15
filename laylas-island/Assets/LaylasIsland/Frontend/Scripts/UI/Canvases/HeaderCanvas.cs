@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using LaylasIsland.Frontend.Extensions;
 using LaylasIsland.Frontend.Game;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,22 +31,11 @@ namespace LaylasIsland.Frontend.UI.Canvases
 
         #endregion
         
+        private readonly List<IDisposable> _disposablesOnEnable = new List<IDisposable>();
         private Action _navigationCallback;
 
         private void Awake()
         {
-            // Model
-            SharedGameModel.Player.Subscribe(player =>
-            {
-                if (player is null)
-                {
-                    return;
-                }
-                
-                player.portrait.Subscribe(value => Debug.Log(value));
-            }).AddTo(gameObject);
-            // ~Model
-            
             // View
             _backButton.OnClickAsObservable().Subscribe(_ =>
             {
@@ -72,6 +63,24 @@ namespace LaylasIsland.Frontend.UI.Canvases
                 // Play Click SFX
             }).AddTo(gameObject);
             // ~View
+        }
+
+        private void OnEnable()
+        {
+            SharedGameModel.Player.Subscribe(player =>
+            {
+                if (player is null)
+                {
+                    return;
+                }
+                
+                player.portrait.Subscribe(value => Debug.Log(value));
+            }).AddTo(_disposablesOnEnable);
+        }
+
+        private void OnDisable()
+        {
+            _disposablesOnEnable.DisposeAllAndClear();
         }
 
         public void Show(params Element[] elements) => Show(null, elements);

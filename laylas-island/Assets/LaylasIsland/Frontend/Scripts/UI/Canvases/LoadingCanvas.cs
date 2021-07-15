@@ -1,5 +1,4 @@
-﻿using LaylasIsland.Frontend.UI;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace LaylasIsland.Frontend.UI.Canvases
@@ -14,7 +13,6 @@ namespace LaylasIsland.Frontend.UI.Canvases
         
         private void OnEnable()
         {
-            UIHolder.HeaderCanvas.gameObject.SetActive(false);
             _progress.value = 0f;
         }
 

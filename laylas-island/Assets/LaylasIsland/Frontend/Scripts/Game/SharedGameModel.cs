@@ -15,5 +15,8 @@ namespace LaylasIsland.Frontend.Game
 
         public static readonly ReactiveCollection<Player> RedPlayers
             = new ReactiveCollection<Player>();
+
+        public static readonly ReactiveProperty<int> Countdown
+            = new ReactiveProperty<int>(-1);
     }
 }
