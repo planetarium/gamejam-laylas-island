@@ -1,5 +1,4 @@
-﻿using LaylasIsland.Frontend.UI;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace LaylasIsland.Frontend.UI.Canvases
 {

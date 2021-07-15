@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Boscohyun;
 using LaylasIsland.Frontend.Extensions;
+using LaylasIsland.Frontend.Game.GameStateBehaviours;
 using UnityEngine;
 
 namespace LaylasIsland.Frontend.Game
@@ -22,10 +22,20 @@ namespace LaylasIsland.Frontend.Game
 
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
 
-        private string _exceptionMessage;
+        private readonly Dictionary<GameState, IGameStateBehaviour> _stateBehaviours =
+            new Dictionary<GameState, IGameStateBehaviour>();
+
+        private GameState _currentBehaviourState;
+        private Coroutine _currentBehaviourCoroutine;
 
         private void Awake()
         {
+            _stateBehaviours.Add(GameState.Initializing, new InitializeBehaviour(_networkManager, _board));
+            _stateBehaviours.Add(GameState.Prepare, new PrepareBehaviour());
+            _stateBehaviours.Add(GameState.Play, new PlayBehaviour());
+            _stateBehaviours.Add(GameState.End, new EndBehaviour());
+            _stateBehaviours.Add(GameState.Terminating, new TerminateBehaviour(_networkManager, _board));
+
             Model.State.Subscribe(OnStateChanged).AddTo(gameObject);
         }
 
@@ -36,111 +46,68 @@ namespace LaylasIsland.Frontend.Game
 
         #region Control
 
-        public IObservable<Exception> EnterAsObservable(GameNetworkManager.JoinOrCreateRoomOptions options)
+        public void Enter(GameNetworkManager.JoinOrCreateRoomOptions options)
         {
-            if (Model.State.Value != GameState.None &&
-                Model.State.Value != GameState.InitializeFailed &&
-                Model.State.Value != GameState.Terminated)
+            if (Model.State.Value != GameState.None)
             {
-                return Observable.Throw<Exception>(
-                    new Exception($"GameController.InitializeAsObservable() state: {Model.State.Value}"));
+                Debug.LogError($"GameController.InitializeAsObservable() state: {Model.State.Value}");
+            }
+
+            if (TryGetBehaviour<InitializeBehaviour>(GameState.Initializing, out var initializeBehaviour))
+            {
+                initializeBehaviour.options = options;
             }
 
             Model.State.Value = GameState.Initializing;
-            StartCoroutine(CoInitialize(options));
-            return Model.State.Where(value => value == GameState.InitializeFailed || value == GameState.Prepare)
-                .Select(_ =>
-                {
-                    switch (Model.State.Value)
-                    {
-                        case GameState.InitializeFailed:
-                            return new Exception(_exceptionMessage);
-                        case GameState.Prepare:
-                            return null;
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(Model.State), Model.State.Value, null);
-                    }
-                })
-                .First();
         }
 
-        public IObservable<Exception> LeaveAsObservable()
+        public static void Leave()
         {
-            if (Model.State.Value == GameState.None ||
-                Model.State.Value == GameState.InitializeFailed)
+            if (Model.State.Value == GameState.None)
             {
-                return Observable.Throw<Exception>(
-                    new Exception($"GameController.TerminateAsObservable() state: {Model.State.Value}"));
+                Debug.LogError($"GameController.TerminateAsObservable() state: {Model.State.Value}");
             }
 
             Model.State.Value = GameState.Terminating;
-            StartCoroutine(CoTerminate());
-            return Model.State.Where(value => value == GameState.None || value == GameState.Terminated)
-                .Select(_ => (Exception) null)
-                .First();
         }
 
         #endregion
 
-        private static void OnStateChanged(GameState state)
+        private bool TryGetBehaviour<T>(GameState state, out T behaviour) where T : IGameStateBehaviour
         {
-            switch (state)
+            try
             {
-                case GameState.None:
-                case GameState.Initializing:
-                case GameState.InitializeFailed:
-                    break;
-                case GameState.Prepare:
-                    break;
-                case GameState.Play:
-                    break;
-                case GameState.End:
-                    break;
-                case GameState.Terminating:
-                    break;
-                case GameState.Terminated:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(state), state, null);
+                behaviour = (T) _stateBehaviours[state];
+                return true;
+            }
+            catch
+            {
+                behaviour = default;
+                return false;
             }
         }
 
-        private IEnumerator CoInitialize(GameNetworkManager.JoinOrCreateRoomOptions options)
+        private void OnStateChanged(GameState state)
         {
-            var failed = false;
-            var done = false;
-            _networkManager.JoinOrCreateRoom(options).Subscribe(tuple =>
+            if (_stateBehaviours.ContainsKey(_currentBehaviourState))
             {
-                var (succeed, errorMessage) = tuple;
-                failed = !succeed;
-                _exceptionMessage = errorMessage;
-                done = true;
-            });
-            yield return new WaitUntil(() => done);
-            if (failed)
-            {
-                Model.State.Value = GameState.InitializeFailed;
-                yield break;
+                if (!(_currentBehaviourCoroutine is null))
+                {
+                    StopCoroutine(_currentBehaviourCoroutine);
+                }
+
+                _stateBehaviours[_currentBehaviourState].Exit();
             }
 
-            done = false;
-            _board.Initialize(() => done = true);
-            yield return new WaitUntil(() => done);
+            _currentBehaviourState = state;
+            if (!_stateBehaviours.ContainsKey(_currentBehaviourState))
+            {
+                return;
+            }
 
-            Model.State.Value = GameState.Prepare;
-        }
-
-        private IEnumerator CoTerminate()
-        {
-            var done = false;
-            _networkManager.LeaveRoom().Subscribe(_ => done = true);
-            yield return new WaitUntil(() => done);
-
-            done = false;
-            _board.Terminate(() => done = true);
-            yield return new WaitUntil(() => done);
-
-            Model.State.Value = GameState.Terminated;
+            var behaviour = _stateBehaviours[_currentBehaviourState];
+            behaviour.Enter();
+            _currentBehaviourCoroutine = StartCoroutine(behaviour.CoUpdate());
         }
     }
 }

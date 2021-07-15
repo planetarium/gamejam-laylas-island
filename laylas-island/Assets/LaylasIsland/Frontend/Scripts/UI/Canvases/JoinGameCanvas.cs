@@ -23,33 +23,11 @@ namespace LaylasIsland.Frontend.UI.Canvases
             _joinButton.OnClickAsObservable().Subscribe(_ =>
             {
                 // Play Click SFX
-                gameObject.SetActive(false);
-                UIHolder.LoadingCanvas.gameObject.SetActive(true);
-                GameController.Instance.EnterAsObservable(new GameNetworkManager.JoinOrCreateRoomOptions(
-                        GameNetworkManager.JoinOrCreate.Join,
-                        _roomNameInputField.text,
-                        _passwordInputField.text
-                    ))
-                    .Subscribe(e =>
-                    {
-                        if (e is null)
-                        {
-                            UIHolder.LoadingCanvas.gameObject.SetActive(false);
-                            UIHolder.PrepareGameCanvas.gameObject.SetActive(true);
-                        }
-                        else
-                        {
-                            UIHolder.MessagePopupCanvas.ShowWithASingleButton(
-                                "Failed",
-                                e.Message,
-                                "OK",
-                                () =>
-                                {
-                                    UIHolder.LoadingCanvas.gameObject.SetActive(false);
-                                    gameObject.SetActive(true);
-                                });
-                        }
-                    });
+                GameController.Instance.Enter(new GameNetworkManager.JoinOrCreateRoomOptions(
+                    GameNetworkManager.JoinOrCreate.Join,
+                    _roomNameInputField.text,
+                    _passwordInputField.text
+                ));
             }).AddTo(gameObject);
             // ~View
         }

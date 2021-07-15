@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using LaylasIsland.Frontend.Extensions;
 using LaylasIsland.Frontend.Game;
 using TMPro;
 using Unity.Mathematics;
@@ -39,50 +41,11 @@ namespace LaylasIsland.Frontend.UI.Canvases
         private readonly ReactiveProperty<Visible> _visible = new ReactiveProperty<Visible>(default);
 
         #endregion
+        
+        private readonly List<IDisposable> _disposablesOnEnable = new List<IDisposable>();
 
         private void Awake()
         {
-            // View
-            _selectVisible.publicButton.OnClickAsObservable()
-                .Subscribe(_ => _visible.Value = Visible.Public)
-                .AddTo(gameObject);
-
-            _selectVisible.privateButton.OnClickAsObservable()
-                .Subscribe(_ => _visible.Value = Visible.Private)
-                .AddTo(gameObject);
-
-            _createButton.OnClickAsObservable().Subscribe(_ =>
-            {
-                // Play Click SFX
-                gameObject.SetActive(false);
-                UIHolder.LoadingCanvas.gameObject.SetActive(true);
-                GameController.Instance.EnterAsObservable(new GameNetworkManager.JoinOrCreateRoomOptions(
-                    GameNetworkManager.JoinOrCreate.Create,
-                    _roomNameInputField.text,
-                    _passwordInputField.text
-                )).Subscribe(e =>
-                {
-                    if (e is null)
-                    {
-                        UIHolder.LoadingCanvas.gameObject.SetActive(false);
-                        UIHolder.PrepareGameCanvas.gameObject.SetActive(true);
-                    }
-                    else
-                    {
-                        UIHolder.MessagePopupCanvas.ShowWithASingleButton(
-                            "Failed",
-                            e.Message,
-                            "OK",
-                            () =>
-                            {
-                                UIHolder.LoadingCanvas.gameObject.SetActive(false);
-                                gameObject.SetActive(true);
-                            });
-                    }
-                });
-            }).AddTo(gameObject);
-            // ~View
-
             // Model
             _visible.Subscribe(value =>
             {
@@ -104,10 +67,34 @@ namespace LaylasIsland.Frontend.UI.Canvases
                 _selectVisible.selection.transform.localPosition = localPosition;
             }).AddTo(gameObject);
             // ~Model
+
+            // View
+            _selectVisible.publicButton.OnClickAsObservable()
+                .Subscribe(_ => _visible.Value = Visible.Public)
+                .AddTo(gameObject);
+
+            _selectVisible.privateButton.OnClickAsObservable()
+                .Subscribe(_ => _visible.Value = Visible.Private)
+                .AddTo(gameObject);
+
+            _createButton.OnClickAsObservable().Subscribe(_ =>
+            {
+                // Play Click SFX
+                GameController.Instance.Enter(new GameNetworkManager.JoinOrCreateRoomOptions(
+                    GameNetworkManager.JoinOrCreate.Create,
+                    _roomNameInputField.text,
+                    _passwordInputField.text
+                ));
+            }).AddTo(gameObject);
+            // ~View
         }
 
         private void OnEnable()
         {
+            SharedGameModel.State.Where(value => value == GameState.Prepare)
+                .Subscribe(_ => gameObject.SetActive(false))
+                .AddTo(_disposablesOnEnable);
+            
             UIHolder.HeaderCanvas.Show(
                 () =>
                 {
@@ -118,6 +105,11 @@ namespace LaylasIsland.Frontend.UI.Canvases
                 HeaderCanvas.Element.Player,
                 HeaderCanvas.Element.Gold,
                 HeaderCanvas.Element.Settings);
+        }
+
+        private void OnDisable()
+        {
+            _disposablesOnEnable.DisposeAllAndClear();
         }
     }
 }

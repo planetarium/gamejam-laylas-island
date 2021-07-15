@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine;
 
 namespace LaylasIsland.Frontend.Game
@@ -69,25 +68,27 @@ namespace LaylasIsland.Frontend.Game
                     .AddTo(gameObject);
             }).AddTo(gameObject);
 
+            _stateMessage = string.Empty;
             _state.Value = State.ConnectingToMaster;
             PhotonNetwork.ConnectUsingSettings();
         }
 
         #region Control
 
-        public IObservable<(bool succeed, string errorMessage)> JoinOrCreateRoom(JoinOrCreateRoomOptions options)
+        public IObservable<string> JoinOrCreateRoom(JoinOrCreateRoomOptions options)
         {
             if (_state.Value == State.ConnectingToMaster ||
                 _state.Value == State.JoinOrCreateRoom)
             {
                 var message = $"Join or Create Room Failed: {_state.Value.ToString()}";
                 Debug.LogError(message);
-                return Observable.Empty((false, message));
+                return Observable.Empty(message);
             }
 
+            _stateMessage = string.Empty;
             _state.Value = State.JoinOrCreateRoom;
             return _state.Where(e => e == State.JoinOrCreateRoomFailed || e == State.JoinedRoom)
-                .Select(e => (e == State.JoinedRoom, _stateMessage))
+                .Select(e => _stateMessage)
                 .First()
                 .DoOnSubscribe(() =>
                 {
@@ -121,12 +122,15 @@ namespace LaylasIsland.Frontend.Game
 
         private void CreateRoom(string roomName)
         {
-            if (string.IsNullOrEmpty(roomName))
-            {
-                Debug.LogError($"{nameof(roomName)} is null or empty");
-                _state.Value = State.JoinOrCreateRoomFailed;
-                return;
-            }
+            // NOTE: Allow empty room name
+            // if (string.IsNullOrEmpty(roomName))
+            // {
+            //     var message = $"{nameof(roomName)} is null or empty";
+            //     Debug.LogError(message);
+            //     _stateMessage = message;
+            //     _state.Value = State.JoinOrCreateRoomFailed;
+            //     return;
+            // }
 
             PhotonNetwork.CreateRoom(roomName);
         }
