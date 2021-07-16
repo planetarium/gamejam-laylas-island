@@ -4,6 +4,7 @@ namespace LaylasIsland.Frontend.Game
 {
     using UniRx;
 
+    // FIXME: 마스터 클라이언트의 모델과 분리해야 합니다.
     public static class SharedGameModel
     {
         public static readonly ReactiveProperty<Player> Player
@@ -20,6 +21,9 @@ namespace LaylasIsland.Frontend.Game
 
         public static readonly ReactiveCollection<Player> RedPlayers
             = new ReactiveCollection<Player>();
+
+        public static readonly Subject<Unit> OnClickStartFromRPC
+            = new Subject<Unit>();
 
         public static readonly ReactiveProperty<int> Countdown
             = new ReactiveProperty<int>(-1);

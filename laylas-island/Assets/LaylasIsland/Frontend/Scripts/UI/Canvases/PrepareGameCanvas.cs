@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using LaylasIsland.Frontend.Extensions;
 using LaylasIsland.Frontend.Game;
 using LaylasIsland.Frontend.UI.Modules;
+using Photon.Pun;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace LaylasIsland.Frontend.UI.Canvases
 {
@@ -18,6 +20,7 @@ namespace LaylasIsland.Frontend.UI.Canvases
         [SerializeField] private List<PlayerPortrait> _redPlayerPortraits;
         [SerializeField] private TextMeshProUGUI _countdownText;
         [SerializeField] private TextMeshProUGUI _messageText;
+        [SerializeField] private Button _startButton;
 
         #endregion
 
@@ -43,12 +46,26 @@ namespace LaylasIsland.Frontend.UI.Canvases
                     _messageText.gameObject.SetActive(true);
                 }
             }).AddTo(gameObject);
+
+            
+            if (PhotonNetwork.IsMasterClient)
+            {
+                _startButton.interactable = false;
+                _startButton.OnClickAsObservable()
+                    .Subscribe(_ => GameController.Instance.NetworkManager.OnClickStartButton())
+                    .AddTo(gameObject);
+            }
+            else
+            {
+                _startButton.gameObject.SetActive(false);
+            }
         }
 
         private void OnEnable()
         {
             SharedGameModel.BluePlayers.ObserveCountChanged()
-                .Select(_ => ((IReadOnlyList<Player>) SharedGameModel.BluePlayers, _bluePlayerViews: _bluePlayerPortraits))
+                .Select(_ => ((IReadOnlyList<Player>) SharedGameModel.BluePlayers,
+                    _bluePlayerViews: _bluePlayerPortraits))
                 .Merge(SharedGameModel.BluePlayers.ObserveMove()
                     .Select(_ => ((IReadOnlyList<Player>) SharedGameModel.BluePlayers,
                         _bluePlayerViews: _bluePlayerPortraits))).Subscribe(SetPlayers)
@@ -57,8 +74,14 @@ namespace LaylasIsland.Frontend.UI.Canvases
             SharedGameModel.RedPlayers.ObserveCountChanged()
                 .Select(_ => ((IReadOnlyList<Player>) SharedGameModel.RedPlayers, _redPlayerViews: _redPlayerPortraits))
                 .Merge(SharedGameModel.RedPlayers.ObserveMove()
-                    .Select(_ => ((IReadOnlyList<Player>) SharedGameModel.RedPlayers, _redPlayerViews: _redPlayerPortraits)))
+                    .Select(_ => ((IReadOnlyList<Player>) SharedGameModel.RedPlayers,
+                        _redPlayerViews: _redPlayerPortraits)))
                 .Subscribe(SetPlayers)
+                .AddTo(_disposablesOnEnable);
+
+            SharedGameModel.BluePlayers.ObserveCountChanged()
+                .CombineLatest(SharedGameModel.RedPlayers.ObserveCountChanged(), (e1, e2) => (e1, e2))
+                .Subscribe(OnPlayerCountChanged)
                 .AddTo(_disposablesOnEnable);
 
             SharedGameModel.Countdown.Subscribe(value =>
@@ -110,6 +133,12 @@ namespace LaylasIsland.Frontend.UI.Canvases
                 views[i].Show(models[i]);
                 Debug.Log($"({i}) {models[i].nicknameWithHex.Value}");
             }
+        }
+
+        private void OnPlayerCountChanged((int blueCount, int redCount) tuple)
+        {
+            var (blueCount, redCount) = tuple;
+            _startButton.interactable = blueCount == redCount;
         }
     }
 }

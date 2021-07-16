@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Photon.Pun;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LaylasIsland.Frontend.Game.Views
@@ -7,6 +8,8 @@ namespace LaylasIsland.Frontend.Game.Views
     {
         [SerializeField] private CharacterSpritesSO _characterSpritesSo;
         [SerializeField] private SpriteRenderer _spriteRenderer;
+
+        public SpriteRenderer SpriteRenderer => _spriteRenderer;
 
         private void Awake()
         {
@@ -22,7 +25,8 @@ namespace LaylasIsland.Frontend.Game.Views
             UpdateSortingOrder(tile.SortingOrder);
         }
 
-        public void UpdateSortingOrder(int tileOrder)
+        [PunRPC]
+        private void UpdateSortingOrder(int tileOrder)
         {
             _spriteRenderer.sortingOrder = tileOrder + 100;
         }

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace LaylasIsland.Frontend.Game
 {
     using Views;
-    
+
     public class Board : MonoBehaviour
     {
         /*
@@ -52,6 +52,17 @@ namespace LaylasIsland.Frontend.Game
         {
             gameObject.SetActive(false);
             callback?.Invoke();
+        }
+
+        public bool TryGetTile(float x, float y, out Tile tile)
+        {
+            tile = _tiles.FirstOrDefault(e =>
+            {
+                var localPosition = e.transform.localPosition;
+                return math.abs(localPosition.x - x) < .000001f &&
+                       math.abs(localPosition.y - y) < .000001f;
+            });
+            return !(tile is null);
         }
 
         private void InitializeTiles()
