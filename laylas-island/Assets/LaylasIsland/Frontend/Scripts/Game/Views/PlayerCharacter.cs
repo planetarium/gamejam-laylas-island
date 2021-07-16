@@ -22,14 +22,20 @@ namespace LaylasIsland.Frontend.Game.Views
 
         private void Awake()
         {
-            _character.SpriteRP
-                .Subscribe(sprite => _photonView.RPC(
-                    "RPCSpriteNameSync",
-                    RpcTarget.All,
-                    sprite
-                        ? sprite.name
-                        : string.Empty))
-                .AddTo(gameObject);
+            // FIXME: bug
+            if (_photonView.IsMine)
+            {
+                _character.SpriteRP
+                    .Subscribe(sprite =>
+                        _photonView.RPC(
+                        "RPCSpriteNameSync",
+                        RpcTarget.All,
+                        sprite
+                            ? sprite.name
+                            : string.Empty))
+                    .AddTo(gameObject);
+            }
+
             _tile.Subscribe(OnTile).AddTo(gameObject);
         }
 
