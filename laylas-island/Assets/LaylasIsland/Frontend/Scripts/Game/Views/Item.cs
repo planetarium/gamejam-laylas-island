@@ -2,28 +2,28 @@
 
 namespace LaylasIsland.Frontend.Game.Views
 {
-    public class Item : MonoBehaviour
+    public class Item : OnTileObject
     {
         [SerializeField] private ItemSpritesSO _itemSpritesSo;
-        [SerializeField] private SpriteRenderer _spriteRenderer;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            SetSprite(_itemSpritesSo.Sprites[Random.Range(0, _itemSpritesSo.Sprites.Count)]);
+        }
         
-        private void Awake()
+        public void SetSpriteByName(string spriteName)
         {
-            _spriteRenderer.sprite = _itemSpritesSo.Sprites[Random.Range(0, _itemSpritesSo.Sprites.Count)];
-        }
+            foreach (var sprite in _itemSpritesSo.Sprites)
+            {
+                if (!sprite.name.Equals(spriteName))
+                {
+                    continue;
+                }
 
-        public void MoveTo(Tile tile)
-        {
-            var localPosition = tile.transform.localPosition;
-            localPosition.z = 0f;
-            transform.localPosition = localPosition;
-
-            UpdateSortingOrder(tile.SortingOrder);
-        }
-
-        public void UpdateSortingOrder(int tileOrder)
-        {
-            _spriteRenderer.sortingOrder = tileOrder + 100;
+                SetSprite(sprite);
+                break;
+            }
         }
     }
 }

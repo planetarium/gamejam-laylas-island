@@ -1,34 +1,37 @@
-﻿using Photon.Pun;
+﻿using UniRx;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LaylasIsland.Frontend.Game.Views
 {
-    public class Character : MonoBehaviour
+    public class Character : OnTileObject
     {
         [SerializeField] private CharacterSpritesSO _characterSpritesSo;
-        [SerializeField] private SpriteRenderer _spriteRenderer;
 
-        public SpriteRenderer SpriteRenderer => _spriteRenderer;
-
-        private void Awake()
+        protected override void Awake()
         {
-            _spriteRenderer.sprite = _characterSpritesSo.Sprites[Random.Range(0, _characterSpritesSo.Sprites.Count)];
+            base.Awake();
+            SetSprite(_characterSpritesSo.Sprites[Random.Range(0, _characterSpritesSo.Sprites.Count)]);
         }
 
-        public void MoveTo(Tile tile)
+        public void SetSpriteByName(string spriteName)
         {
-            var localPosition = tile.transform.localPosition;
-            localPosition.z = 0f;
-            transform.localPosition = localPosition;
+            if (string.IsNullOrEmpty(spriteName))
+            {
+                SetSprite(null);
+                return;
+            }
 
-            UpdateSortingOrder(tile.SortingOrder);
-        }
+            foreach (var sprite in _characterSpritesSo.Sprites)
+            {
+                if (!sprite.name.Equals(spriteName))
+                {
+                    continue;
+                }
 
-        [PunRPC]
-        private void UpdateSortingOrder(int tileOrder)
-        {
-            _spriteRenderer.sortingOrder = tileOrder + 100;
+                SetSprite(sprite);
+                break;
+            }
         }
     }
 }
