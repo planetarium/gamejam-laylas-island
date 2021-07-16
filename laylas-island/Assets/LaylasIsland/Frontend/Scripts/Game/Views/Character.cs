@@ -1,34 +1,57 @@
-﻿using Photon.Pun;
+﻿using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LaylasIsland.Frontend.Game.Views
 {
-    public class Character : MonoBehaviour
+    public class Character : OnTileObject
     {
         [SerializeField] private CharacterSpritesSO _characterSpritesSo;
-        [SerializeField] private SpriteRenderer _spriteRenderer;
 
-        public SpriteRenderer SpriteRenderer => _spriteRenderer;
-
-        private void Awake()
+        protected override void Awake()
         {
-            _spriteRenderer.sprite = _characterSpritesSo.Sprites[Random.Range(0, _characterSpritesSo.Sprites.Count)];
+            base.Awake();
+            SetSpriteNonPerson();
         }
 
-        public void MoveTo(Tile tile)
+        public void SetSpriteByName(string spriteName)
         {
-            var localPosition = tile.transform.localPosition;
-            localPosition.z = 0f;
-            transform.localPosition = localPosition;
+            if (string.IsNullOrEmpty(spriteName))
+            {
+                SetSprite(null);
+                return;
+            }
 
-            UpdateSortingOrder(tile.SortingOrder);
+            foreach (var sprite in _characterSpritesSo.Sprites)
+            {
+                if (!sprite.name.Equals(spriteName))
+                {
+                    continue;
+                }
+
+                SetSprite(sprite);
+                break;
+            }
         }
 
-        [PunRPC]
-        private void UpdateSortingOrder(int tileOrder)
+        private void SetSpritePerson()
         {
-            _spriteRenderer.sortingOrder = tileOrder + 100;
+            var nonPerson = _characterSpritesSo.Sprites.Where(e =>
+            {
+                var num = int.Parse(e.name);
+                return num >= 200022 && num <= 200026;
+            }).ToList();
+            SetSprite(nonPerson[Random.Range(0, nonPerson.Count)]);
+        }
+
+        private void SetSpriteNonPerson()
+        {
+            var nonPerson = _characterSpritesSo.Sprites.Where(e =>
+            {
+                var num = int.Parse(e.name);
+                return !(num >= 200022 && num <= 200026);
+            }).ToList();
+            SetSprite(nonPerson[Random.Range(0, nonPerson.Count)]);
         }
     }
 }

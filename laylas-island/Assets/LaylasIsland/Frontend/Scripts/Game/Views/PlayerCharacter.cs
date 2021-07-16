@@ -3,26 +3,40 @@ using UnityEngine;
 
 namespace LaylasIsland.Frontend.Game.Views
 {
+    using UniRx;
+
     [RequireComponent(typeof(PhotonView))]
-    public class PlayerCharacter : MonoBehaviourPunCallbacks
+    public class PlayerCharacter : MonoBehaviourPunCallbacks, IOnTileObject
     {
         [SerializeField] private Character _character;
         [SerializeField] private PhotonView _photonView;
 
+        // Model
+        private readonly ReactiveProperty<Tile> _tile = new ReactiveProperty<Tile>();
+        // ~Model
+
         private float _moveCooldown;
 
-        public void MoveTo(Tile tile)
-        {
-            if (tile is null)
-            {
-                return;
-            }
-            
-            var localPosition = tile.transform.localPosition;
-            localPosition.z = 0f;
-            transform.localPosition = localPosition;
+        public bool HasTile => _character.HasTile;
+        public Tile Tile => _character.Tile;
 
-            _photonView.RPC("RPCUpdateSortingOrder", RpcTarget.All, tile.SortingOrder);
+        private void Awake()
+        {
+            // FIXME: bug
+            if (_photonView.IsMine)
+            {
+                _character.SpriteRP
+                    .Subscribe(sprite =>
+                        _photonView.RPC(
+                        "RPCSpriteNameSync",
+                        RpcTarget.All,
+                        sprite
+                            ? sprite.name
+                            : string.Empty))
+                    .AddTo(gameObject);
+            }
+
+            _tile.Subscribe(OnTile).AddTo(gameObject);
         }
 
         private void Update()
@@ -75,14 +89,37 @@ namespace LaylasIsland.Frontend.Game.Views
                     return;
                 }
             }
-            
+
             MoveTo(tile);
         }
-        
-        [PunRPC]
-        private void RPCUpdateSortingOrder(int tileOrder)
+
+        public void MoveTo(Tile tile)
         {
-            _character.SpriteRenderer.sortingOrder = tileOrder + 100;
+            if (tile is null)
+            {
+                return;
+            }
+
+            _tile.Value = tile;
         }
+
+        private void OnTile(Tile tile)
+        {
+            if (tile is null)
+            {
+                return;
+            }
+
+            var localPosition = tile.transform.localPosition;
+            localPosition.z = 0f;
+            transform.localPosition = localPosition;
+            _photonView.RPC("RPCSetSortingOrder", RpcTarget.All, tile.SortingOrder + 100);
+        }
+
+        [PunRPC]
+        private void RPCSetSortingOrder(int value) => _character.SetSortingOrder(value);
+
+        [PunRPC]
+        private void RPCSpriteNameSync(string spriteName) => _character.SetSpriteByName(spriteName);
     }
 }

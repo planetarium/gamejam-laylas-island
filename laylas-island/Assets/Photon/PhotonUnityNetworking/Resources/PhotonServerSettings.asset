@@ -42,6 +42,9 @@ MonoBehaviour:
   - SetChild
   - RPCUpdateSortingOrder
   - UpdateSortingOrder
+  - RPCOnClickStartButton
+  - RPCSetSortingOrder
+  - RPCSpriteNameSync
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

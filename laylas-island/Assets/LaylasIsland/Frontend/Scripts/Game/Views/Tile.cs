@@ -14,9 +14,12 @@ namespace LaylasIsland.Frontend.Game.Views
 
         public int SortingOrder => _spriteRenderer.sortingOrder;
 
+        public int Index => _index;
+
         private void Awake()
         {
             name = $"{nameof(Tile)} {_index:00}";
+            _spriteRenderer.sprite = _tileSpritesSo.Sprites[Random.Range(0, _tileSpritesSo.Sprites.Count)];
         }
 
         public void UpdateSortingOrder(int maxOrder)

@@ -127,10 +127,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2817c1dbd754d53a22b47e69d7aa29c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _spriteRenderer: {fileID: 1004940711047028836}
   _characterSpritesSo: {fileID: 11400000, guid: 415bd2d12a5d12644b5531551f4aee4c,
     type: 2}
-  _spriteRenderer: {fileID: 1004940711047028836}
-  _photonView: {fileID: 6406993240686147049}
 --- !u!114 &6406993240686147049
 MonoBehaviour:
   m_ObjectHideFlags: 0
