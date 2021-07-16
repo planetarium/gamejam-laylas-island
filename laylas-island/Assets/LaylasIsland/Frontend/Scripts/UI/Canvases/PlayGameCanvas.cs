@@ -51,7 +51,7 @@ namespace LaylasIsland.Frontend.UI.Canvases
                     foreach (var player in SharedGameModel.BluePlayers)
                     {
                         var key = player.nicknameWithHex.Value;
-                        if (_portraitsModel.Any(e => e.player.nicknameWithHex.Value.Equals(key)))
+                        if (_portraitsModel.Any(e => e.player.nicknameWithHex.Value?.Equals(key) ?? false))
                         {
                             continue;
                         }

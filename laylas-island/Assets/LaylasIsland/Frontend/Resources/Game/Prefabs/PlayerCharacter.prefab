@@ -86,7 +86,7 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 0
   m_SynchronizeScale: 0
-  m_UseLocal: 1
+  m_UseLocal: 0
 --- !u!1001 &2528608561783193150
 PrefabInstance:
   m_ObjectHideFlags: 0

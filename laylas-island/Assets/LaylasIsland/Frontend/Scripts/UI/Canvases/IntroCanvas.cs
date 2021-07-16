@@ -111,6 +111,7 @@ namespace LaylasIsland.Frontend.UI.Canvases
             _signing.secretInputField.onEndEdit.AsObservable().Subscribe(value => _signing.button.onClick.Invoke())
                 .AddTo(gameObject);
 
+            _signing.button.interactable = false;
             _signing.button.OnClickAsObservable().Subscribe(_ =>
             {
                 // Play Click SFX

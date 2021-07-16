@@ -13,11 +13,16 @@ namespace LaylasIsland.Frontend.Game.Views
 
         public void MoveTo(Tile tile)
         {
+            if (tile is null)
+            {
+                return;
+            }
+            
             var localPosition = tile.transform.localPosition;
             localPosition.z = 0f;
             transform.localPosition = localPosition;
 
-            _character.UpdateSortingOrder(tile.SortingOrder);
+            _photonView.RPC("RPCUpdateSortingOrder", RpcTarget.All, tile.SortingOrder);
         }
 
         private void Update()
@@ -34,32 +39,50 @@ namespace LaylasIsland.Frontend.Game.Views
             }
 
             _moveCooldown = 0.1f;
+            Tile tile = null;
             if (Input.GetKey(KeyCode.UpArrow))
             {
-                // FIXME: get tile and MoveTo(tile);
-                transform.localPosition += Vector3.up;
-                return;
+                var localPosition = transform.localPosition + Vector3.up;
+                if (!GameController.Instance.Board.TryGetTile(localPosition.x, localPosition.y, out tile))
+                {
+                    return;
+                }
             }
 
             if (Input.GetKey(KeyCode.DownArrow))
             {
-                // FIXME: get tile and MoveTo(tile);
-                transform.localPosition += Vector3.down;
-                return;
+                var localPosition = transform.localPosition + Vector3.down;
+                if (!GameController.Instance.Board.TryGetTile(localPosition.x, localPosition.y, out tile))
+                {
+                    return;
+                }
             }
 
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                // FIXME: get tile and MoveTo(tile);
-                transform.localPosition += Vector3.left;
-                return;
+                var localPosition = transform.localPosition + Vector3.left;
+                if (!GameController.Instance.Board.TryGetTile(localPosition.x, localPosition.y, out tile))
+                {
+                    return;
+                }
             }
 
             if (Input.GetKey(KeyCode.RightArrow))
             {
-                // FIXME: get tile and MoveTo(tile);
-                transform.localPosition += Vector3.right;
+                var localPosition = transform.localPosition + Vector3.right;
+                if (!GameController.Instance.Board.TryGetTile(localPosition.x, localPosition.y, out tile))
+                {
+                    return;
+                }
             }
+            
+            MoveTo(tile);
+        }
+        
+        [PunRPC]
+        private void RPCUpdateSortingOrder(int tileOrder)
+        {
+            _character.SpriteRenderer.sortingOrder = tileOrder + 100;
         }
     }
 }

@@ -28,6 +28,7 @@ namespace LaylasIsland.Frontend.Game.GameStateBehaviours
                 .CombineLatest(Model.RedPlayers.ObserveCountChanged(), (e1, e2) => (e1, e2))
                 .Subscribe(OnPlayerCountChanged)
                 .AddTo(_disposables);
+            Model.OnClickStartFromRPC.Subscribe(_ => StartPlay()).AddTo(_disposables);
             // ~Model
 
             // View
@@ -55,10 +56,12 @@ namespace LaylasIsland.Frontend.Game.GameStateBehaviours
 
         private void OnPlayerCountChanged((int blueCount, int redCount) tuple)
         {
+            return;
             var (blueCount, redCount) = tuple;
             // if (blueCount == 2 &&
             //     blueCount == redCount)
-            if (blueCount == 1)
+            // if (blueCount == 1)
+            if (blueCount == redCount)
             {
                 _countdownAndPlayCts = new CancellationTokenSource();
                 CountdownAndPlayAsync(_countdownAndPlayCts);
@@ -71,9 +74,15 @@ namespace LaylasIsland.Frontend.Game.GameStateBehaviours
             }
         }
 
+        private void StartPlay()
+        {
+            _countdownAndPlayCts = new CancellationTokenSource();
+            CountdownAndPlayAsync(_countdownAndPlayCts);
+        }
+
         private static async void CountdownAndPlayAsync(CancellationTokenSource cts)
         {
-            var value = 5;
+            var value = 3;
             while (value >= 0)
             {
                 Model.Countdown.Value = value;

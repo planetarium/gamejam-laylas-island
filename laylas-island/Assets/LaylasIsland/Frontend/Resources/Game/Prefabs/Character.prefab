@@ -92,6 +92,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6701402703994638091}
   - component: {fileID: 917129955571503208}
+  - component: {fileID: 6406993240686147049}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -129,3 +130,26 @@ MonoBehaviour:
   _characterSpritesSo: {fileID: 11400000, guid: 415bd2d12a5d12644b5531551f4aee4c,
     type: 2}
   _spriteRenderer: {fileID: 1004940711047028836}
+  _photonView: {fileID: 6406993240686147049}
+--- !u!114 &6406993240686147049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9133544677865967658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

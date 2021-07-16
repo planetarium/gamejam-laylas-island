@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
+using LaylasIsland.Frontend.Game.Views;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace LaylasIsland.Frontend.Game
 {
@@ -122,32 +124,20 @@ namespace LaylasIsland.Frontend.Game
                 .DoOnSubscribe(() => PhotonNetwork.LeaveRoom());
         }
 
-        private void CreateRoom(string roomName)
+        public void OnClickStartButton()
         {
-            // NOTE: Allow empty room name
-            // if (string.IsNullOrEmpty(roomName))
-            // {
-            //     var message = $"{nameof(roomName)} is null or empty";
-            //     Debug.LogError(message);
-            //     _stateMessage = message;
-            //     _state.Value = State.JoinOrCreateRoomFailed;
-            //     return;
-            // }
-
-            PhotonNetwork.CreateRoom(roomName);
+            _photonView.RPC("RPCOnClickStartButton", RpcTarget.All);
         }
 
-        private static void JoinRoom(string roomName = default)
-        {
-            if (string.IsNullOrEmpty(roomName))
-            {
-                PhotonNetwork.JoinRandomRoom();
-            }
-            else
-            {
-                PhotonNetwork.JoinRoom(roomName);
-            }
-        }
+        // FIXME: PunRPC does not support Transfom type
+        // public void SetChildToParent(Transform child, Transform parent)
+        // {
+        //     _photonView.RPC(
+        //         "SetChild",
+        //         RpcTarget.All,
+        //         child,
+        //         parent);
+        // }
 
         #endregion
 
@@ -189,7 +179,7 @@ namespace LaylasIsland.Frontend.Game
             var player = Model.Player.Value;
             _photonView.RPC(
                 "AddPlayer",
-                RpcTarget.All,
+                RpcTarget.AllBuffered,
                 player.nicknameWithHex.Value,
                 player.portrait.Value);
 
@@ -247,12 +237,51 @@ namespace LaylasIsland.Frontend.Game
             }
         }
 
+        [PunRPC]
+        private void RPCOnClickStartButton()
+        {
+            Model.OnClickStartFromRPC.OnNext(Unit.Default);
+        }
+
+        [PunRPC]
+        private void SetChild(Transform child, Transform parent)
+        {
+            child.SetParent(parent);
+        }
+
         #endregion
+
+        private void CreateRoom(string roomName)
+        {
+            // NOTE: Allow empty room name
+            // if (string.IsNullOrEmpty(roomName))
+            // {
+            //     var message = $"{nameof(roomName)} is null or empty";
+            //     Debug.LogError(message);
+            //     _stateMessage = message;
+            //     _state.Value = State.JoinOrCreateRoomFailed;
+            //     return;
+            // }
+
+            PhotonNetwork.CreateRoom(roomName);
+        }
+
+        private static void JoinRoom(string roomName = default)
+        {
+            if (string.IsNullOrEmpty(roomName))
+            {
+                PhotonNetwork.JoinRandomRoom();
+            }
+            else
+            {
+                PhotonNetwork.JoinRoom(roomName);
+            }
+        }
 
         private static void RemovePlayer(string nicknameWithHex)
         {
             var player = Model.BluePlayers.FirstOrDefault(e =>
-                e?.nicknameWithHex.Value.Equals(nicknameWithHex) ?? false);
+                e?.nicknameWithHex.Value?.Equals(nicknameWithHex) ?? false);
             if (!(player is null))
             {
                 Model.BluePlayers.Remove(player);
@@ -261,7 +290,7 @@ namespace LaylasIsland.Frontend.Game
             }
 
             player = Model.RedPlayers.FirstOrDefault(e =>
-                e?.nicknameWithHex.Value.Equals(nicknameWithHex) ?? false);
+                e?.nicknameWithHex.Value?.Equals(nicknameWithHex) ?? false);
             if (!(player is null))
             {
                 Model.RedPlayers.Remove(player);
